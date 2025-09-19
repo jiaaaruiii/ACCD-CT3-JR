@@ -1,2 +1,2 @@
-# ACCD-CT3-J.R.
+# ACCD-CT3-JR
 Works for ACCD Creative Tech 3:D
