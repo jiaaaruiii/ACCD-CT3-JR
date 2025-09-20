@@ -16,13 +16,25 @@
             const triggerButton = document.getElementById('fetch-botton') 
             const mainContent = document.getElementById('main-content')
 
-            triggerButton.addEventListener('click',()=>{  
-            fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-               .then((response)=>{
-                   console.log(response)
+            triggerButton.addEventListener('click',()=>{  //当点击时
+            fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')//api
+               .then(response=>response.json())//以json格式返回
+               .then((data) =>{//当拿到返回的数据时，开始进行
+                    let drinkData = data.drinks[0]//drinks是API给的定义，[0]返回第一行
+                    console.log(drinkData)//在控制台显示返回的数据
+                    let drinkName = drinkData.strDrink
+                    let drinkImage = drinkData.strDrinkThumb
+                    let drinkInstructions = drinkData.strInstructions
+                    //${变量名}，占位符，用来把变量的值插入到字符串里
+                    //
+                    let drinkHTML = `
+                     <h2>${drinkName}</h2>
+                     <img src="${drinkImage}" alt="${drinkName}"/>
+                    <p>${drinkInstructions}</p>
+                    `
 
-                })
-            
+                    mainContent.innerHTML = drinkHTML
+                })                   
             })
 
         </script>
