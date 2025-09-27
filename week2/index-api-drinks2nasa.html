@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+     <h1>Fetch example</h1>
+     <h3>Satrt here</h3>
+     <button id="fetch-botton">Fetch data</button>
+
+
+     <button id="fetchCat">Fetch Cat</button>
+    </header>
+    <main id="main-content"></main>
+        <script>
+            const triggerButton = document.getElementById('fetch-botton')
+            const catButton = document.getElementById('fetchCat')
+            const mainContent = document.getElementById('main-content')
+
+            const fetchCocktailData = ()=>{ //当点击时
+            fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')//api
+               .then(response=>response.json())//以json格式返回
+               .then((data) => appenDrinkData(data, false))//当拿到返回的数据时，开始进行 
+
+            }
+
+            const appenDrinkData = (data, logData = true) => {//【WEEK2增加部分】
+
+                    if(logData) console.log(data)
+                    let drinkData = data.drinks[0]//drinks是API给的定义，[0]返回第一行
+
+                    if(logData) console.log(drinkData)//在控制台显示返回的数据
+                    let drinkName = drinkData.strDrink
+                    let drinkImage = drinkData.strDrinkThumb
+                    let drinkInstructions = drinkData.strInstructions
+                    //${变量名}，占位符，用来把变量的值插入到字符串里
+                    //
+                    let drinkHTML = `
+                     <h2>${drinkName}</h2>
+                     <img src="${drinkImage}" alt="${drinkName}"/>
+                    <p>${drinkInstructions}</p>
+                    `
+
+                    mainContent.innerHTML = drinkHTML
+                    console.log(new Date(drinkData.dateModified))//获取鸡尾酒的时间
+
+                    const drinkDate = new Date(drinkData.dateModified)
+                    const year = drinkDate.getFullYear()//2025年
+                    const month = drinkDate.getMonth()//几月需要+2
+                    const day = drinkDate.getDate()//几号
+
+                    const nasaDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day <10 ? '0' + day : day)
+                    // 少于10月在数字前加入0字符，1112月保持原样，if（true？then：or false ）
+                    console.log(nasaDate)
+
+                    fetchNASAData(nasaDate)
+            }
+
+            const fetchNASAData = (requestDate) =>{
+                fetch('https://api.nasa.gov/planetary/apod?api_key=hK2eHlU0eaHvSDb8j1iS6N6EdHQDWtk4hrYjyRSu&date='+ requestDate) 
+                .then(response=>response.json())
+                .then((data) => appendNASAData(data))
+            }
+
+            const appendNASAData = (data) =>{
+                console.log(data)
+                let nasaTitle = data.title
+                let nasaAuthor = data.copyright ?data.copyright : 'Public Domain'
+                let nasaImage = data.hdurl
+
+                let nasaHTML = `
+                  <h2>${nasaTitle} </h2>
+                  <h4>${nasaAuthor} </h4>
+                  <img src="${nasaImage}" alt="${nasaTitle}"/>
+                `
+
+                mainContent.innerHTML += nasaHTML//直接往原有网页后添加内容
+            }
+
+            const fetchCatData = () =>{
+                fetch('https://cataas.com/cat', {
+                    method: 'GET',
+                    headers: {
+                        'accept':'application/json'
+                    }
+                })
+                    .then(response=>response.json())
+                    .then((data) => appendCatData(data))
+            }
+
+            const appendCatData = (data) =>{
+                console.log(data)
+            }
+
+            triggerButton.addEventListener('click', fetchCocktailData)
+            catButton.addEventListener('click', fetchCatData)
+
+        </script>
+</body>
+</html>
