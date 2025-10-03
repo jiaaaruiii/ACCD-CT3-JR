@@ -1,11 +1,522 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Catsay Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #fafafa;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 60px 40px 100px;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* 主标题 */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #f77062;
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f77062;
+        }
+
+        /* 一级标题 - 章节 */
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 80px 0 30px 0;
+            padding-top: 60px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        /* 二级标题 - 小节 */
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #444;
+            margin: 50px 0 20px 0;
+            padding-left: 20px;
+            border-left: 4px solid #f77062;
+        }
+
+        /* 三级标题 */
+        h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            margin: 35px 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 段落 */
+        p {
+            color: #555;
+            font-size: 1rem;
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+
+        /* 双语文本 */
+        .bilingual {
+            margin: 15px 0;
+        }
+
+        .bilingual .en {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            line-height: 1.7;
+        }
+
+        .bilingual .zh {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        h2 .en {
+            display: block;
+            font-size: 1.2rem;
+            color: #999;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        h3 .en {
+            display: block;
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 400;
+            margin-bottom: 5px;
+            letter-spacing: 0.05em;
+        }
+
+        h4 .en {
+            display: inline;
+            margin-right: 10px;
+            color: #999;
+        }
+
+        /* 链接 */
+        a {
+            color: #f77062;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: #f77062;
+        }
+
+        /* 图片容器 */
+        .img-wrapper {
+            margin: 30px 0;
+        }
+
+        .img-wrapper.large img {
+            max-width: 100%;
+        }
+
+        .img-wrapper.medium img {
+            max-width: 700px;
+        }
+
+        .img-wrapper.small img {
+            max-width: 500px;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        /* 视频容器 */
+        .video-wrapper {
+            margin: 30px 0;
+            max-width: 700px;
+        }
+
+        iframe, video {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        iframe {
+            aspect-ratio: 16/9;
+        }
+
+        /* API 列表 */
+        .api-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            padding: 40px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .api-item h4 {
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            margin: 0 0 10px 0;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .api-item p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 8px 0;
+        }
+
+        .api-item a {
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* 对比图组 */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .comparison img {
+            border: 1px solid #e5e5e5;
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            object-position: center;
+            background: #fafafa;
+        }
+
+        /* CSS样式网格 */
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .style-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .style-item h3 {
+            font-size: 1.1rem;
+            margin: 0 0 15px 0;
+            padding-left: 15px;
+            border-left: 3px solid #f77062;
+        }
+
+        .style-item p {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .style-item .img-wrapper {
+            margin: 0;
+        }
+
+        .style-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            object-position: center;
+            background: #fafafa;
+        }
+
+        /* 提示框 */
+        .note {
+            background: #fff9f5;
+            border-left: 4px solid #f77062;
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .note p {
+            margin: 0;
+            color: #666;
+        }
+
+        /* 小标签 */
+        .label {
+            display: inline-block;
+            font-size: 0.85rem;
+            color: #888;
+            margin: 20px 0 10px 0;
+            font-weight: 500;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 40px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+                margin: 60px 0 25px 0;
+                padding-top: 40px;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+                margin: 40px 0 15px 0;
+            }
+
+            .api-list {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+                gap: 30px;
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .comparison img {
+                height: 160px;
+            }
+
+            .style-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .style-item img {
+                height: 180px;
+            }
+
+            .img-wrapper.small img,
+            .img-wrapper.medium img {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+    <div class="container">
+        <h1>Catsay Document</h1>
+
+        <!-- Structure Section -->
+        <h2><span class="en">Structure</span>结构</h2>
+        <div class="bilingual">
+            <p class="en">The entire website includes a navigation bar, start page, and result page.</p>
+            <p class="zh">整个网站包括导航栏、开始页和结果页面</p>
+        </div>
+        
+        <div class="img-wrapper large">
+            <img src="images/final1.png" alt="网站首页展示">
+        </div>
+        <div class="img-wrapper large">
+            <img src="images/final2.png" alt="网站结果页展示">
+        </div>
+
+        <h3><span class="en">Navigation Bar</span>导航栏</h3>
+        <div class="bilingual">
+            <p class="en">The navigation bar remains visible at the top of the website. It includes logo text that can navigate back to the start page, and a link to this documentation page.</p>
+            <p class="zh">导航栏自身能够一直显示在网站顶部。包括了可跳转回到开始页的logo文字，以及链接到此说明页面的链接</p>
+        </div>
+        <div class="img-wrapper small">
+            <img src="images/navbar.png" alt="导航栏设计">
+        </div>
+
+        <p class="label">Reference / 参考教程</p>
+        <div class="video-wrapper">
+            <iframe 
+                src="https://www.youtube.com/embed/FazgJVnrVuI?start=566" 
+                title="navbar tutorial" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <h3><span class="en">Page Switching</span>页面切换</h3>
+        <div class="bilingual">
+            <p class="en">Page display is controlled through grouping.</p>
+            <p class="zh">通过分组来控制显示状态</p>
+        </div>
+        <div class="img-wrapper small">
+            <img src="images/pagegroup.png" alt="页面分组">
+            <img src="images/pagechange.png" alt="页面切换逻辑">
+        </div>
+
+        <h3><span class="en">Start Page</span>开始页</h3>
+        <div class="bilingual">
+            <p class="en">The start page contains text and a start button. Clicking the start button hides the start page and displays the result page.</p>
+            <p class="zh">开始页包含了文字和开始按钮，开始按钮会让开始页面消失，结果页面出现</p>
+        </div>
+        <div class="img-wrapper medium">
+            <img src="images/startpage.png" alt="开始页面设计">
+        </div>
+
+        <h3><span class="en">Result Page</span>结果页</h3>
+        <div class="bilingual">
+            <p class="en">The result page displays images and text fetched from several APIs, along with an Again button that functions the same as the Start button.</p>
+            <p class="zh">结果页包含了从几个API获取的图片和文字，以及与Start按钮功能相同的Again按钮</p>
+        </div>
+        <div class="img-wrapper medium">
+            <img src="images/resultpage.png" alt="结果页面设计">
+        </div>
+
+        <!-- API Section -->
+        <h2><span class="en">API</span>接口</h2>
+        <div class="bilingual">
+            <p class="en">The following APIs are primarily used:</p>
+            <p class="zh">主要使用了以下几个API</p>
+        </div>
+        
+        <div class="api-list">
+            <div class="api-item">
+                <h4>Meowfacts</h4>
+                <p>For fetching random cat facts</p>
+                <p>用于获取猫的随机小知识文字</p>
+                <a href="https://meowfacts.herokuapp.com" target="_blank">访问 API →</a>
+            </div>
+            
+            <div class="api-item">
+                <h4>Cataas</h4>
+                <p>For fetching random cat images and upload dates</p>
+                <p>用于获取随机猫咪图片，以及图片上传日期</p>
+                <a href="https://cataas.com/cat" target="_blank">访问 API →</a>
+            </div>
+            
+            <div class="api-item">
+                <h4>TodayInHistory</h4>
+                <p>Uses cat image dates to fetch historical events</p>
+                <p>使用猫咪图片的日期，来获得历史今日的随机事件</p>
+                <a href="https://history.muffinlabs.com" target="_blank">访问 API →</a>
+            </div>
+        </div>
+
+        <!-- CSS Style Section -->
+        <h2><span class="en">CSS Style</span>样式设计</h2>
+        <div class="note">
+            <p class="en">During Week 2 discussions with classmates, I realized I could also improve the visual design, so I began learning CSS.</p>
+            <p class="zh">在Week 2与同学的课后交流中，意识到还可以在视觉上进行美化，于是开始了CSS的学习</p>
+        </div>
+
+        <div class="style-grid">
+            <div class="style-item">
+                <h3><span class="en">Layout Settings</span>通过 class 和 id 进行排版设置</h3>
+                <p>Size, colors, margins, etc. were configured</p>
+                <p>尺寸、颜色、边距等等进行了设定</p>
+                <div class="img-wrapper">
+                    <img src="images/style.png" alt="CSS样式代码">
+                </div>
+            </div>
+
+            <div class="style-item">
+                <h3><span class="en">Gradient Text</span>渐变文字</h3>
+                <p>Gradient text was used in the navigation bar title</p>
+                <p>在导航栏的标题处，使用了渐变文字</p>
+                <div class="img-wrapper">
+                    <img src="images/gradientwords.png" alt="渐变文字效果">
+                </div>
+            </div>
+
+            <div class="style-item">
+                <h3><span class="en">Button Shape</span>按钮形状</h3>
+                <p>SVG image used as the shape for the Again button</p>
+                <p>使用SVG图片作为Again按钮的形状</p>
+                <div class="img-wrapper">
+                    <img src="images/pawbutton.png" alt="猫爪按钮">
+                </div>
+                <p>SVG source / SVG图片来源：<a href="https://www.iconfont.cn/search/index?searchType=icon&page=1&fromCollection=-1" target="_blank">阿里巴巴icon</a></p>
+            </div>
+        </div>
+
+        <h3><span class="en">Hover Effects</span>悬停效果</h3>
+        <div class="bilingual">
+            <p class="en">Buttons are configured to darken and enlarge on hover.</p>
+            <p class="zh">设置了各个按钮在悬停时的颜色加深与放大</p>
+        </div>
+        
+        <h4><span class="en">START BUTTON</span>开始按钮</h4>
+        <div class="comparison">
+            <img src="images/hoverstart1.png" alt="Start按钮默认状态">
+            <img src="images/hoverstart2.png" alt="Start按钮悬停状态">
+        </div>
+
+        <h4><span class="en">ABOUT LINK</span>关于</h4>
+        <div class="comparison">
+            <img src="images/hoverabout1.png" alt="About链接默认状态">
+            <img src="images/hoverabout2.png" alt="About链接悬停状态">
+        </div>
+
+        <h4><span class="en">PAW BUTTON</span>猫爪按钮</h4>
+        <div class="comparison">
+            <img src="images/pawbutton.png" alt="猫爪按钮默认状态">
+            <img src="images/hoverpaw2.png" alt="猫爪按钮悬停状态">
+        </div>
+
+        <!-- Experiments Section -->
+        <h2><span class="en">Experiments</span>其他尝试</h2>
+        <div class="note">
+            <p class="en">I attempted to add animations to the start page using ChatGPT, but the results were unsatisfactory and I didn't know how to adjust them, so they were not used in the final version.</p>
+            <p class="zh">试图用ChatGPT给开始页面增加一些动画，但是效果不尽如人意，且不知道如何调整，所以最后没有使用</p>
+        </div>
+
+        <h3><span class="en">Cat Fur Animation</span>猫毛飞舞</h3>
+        <div class="video-wrapper">
+            <video controls preload="metadata">
+                <source src="images/catfur.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+        </div>
+
+        <h3><span class="en">Cat Step Animation</span>猫脚步动画</h3>
+        <div class="video-wrapper">
+            <video controls preload="metadata">
+                <source src="images/catstep.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+        </div>
+    </div>
 </body>
 </html>

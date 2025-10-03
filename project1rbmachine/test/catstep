@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>猫爪随机路径动画</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #1a1a1a;
+    overflow-x: hidden;
+  }
+  .bottom-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background: url('your-bottom-image.png') no-repeat center bottom;
+    background-size: cover;
+  }
+  canvas {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div class="bottom-container">
+  <canvas id="pawCanvas"></canvas>
+</div>
+
+<script>
+// Canvas 初始化
+const canvas = document.getElementById('pawCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = 200;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = 200;
+});
+
+// 加载 SVG 猫爪
+const pawImg = new Image();
+pawImg.src = 'data:image/svg+xml;base64,' + btoa(`
+<svg viewBox="0 0 1304 1024" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+<path d="M0 446.49054a171.094255 145.438963 90 1 0 290.877927 0 171.094255 145.438963 90 1 0-290.877927 0Z"></path>
+<path d="M1126.923945 768.927392a140.307905 171.094255 12.07 1 0 71.553865-334.6237 140.307905 171.094255 12.07 1 0-71.553865 334.6237Z"></path>
+<path d="M353.069892 190.999222a190.999222 149.508423 90 1 0 299.016847 0 190.999222 149.508423 90 1 0-299.016847 0Z"></path>
+<path d="M887.858242 431.109679a149.508423 190.999222 6.71 1 0 44.634256-379.38186 149.508423 190.999222 6.71 1 0-44.634256 379.38186Z"></path>
+<path d="M962.073434 786.025054c-10.704449 162.07067-167.201728 249.033261-352.36216 236.736415s-328.918531-118.899006-318.479481-281.058143 173.305918-264.957235 354.662289-271.415291c187.549028 37.686739 326.883801 153.577883 316.179352 315.737019z"></path>
+</svg>
+`);
+
+// 生成随机曲线路径
+function generatePath(numPoints) {
+  const path = [];
+  const widthStep = canvas.width / (numPoints-1);
+  for(let i=0;i<numPoints;i++){
+    path.push({
+      x: i * widthStep + Math.random()*widthStep*0.2 - widthStep*0.1,
+      y: Math.random() * 50 + 100 // 控制纵向范围
+    });
+  }
+  return path;
+}
+
+// 初始化爪印数组
+const numPaws = 15;
+const paths = generatePath(numPaws);
+const paws = paths.map(p => ({
+  x: p.x,
+  y: p.y,
+  offset: Math.random()*Math.PI*2,
+  rotation: Math.random()*20 - 10,
+  speed: 1 + Math.random()*0.5
+}));
+
+// 绘制函数
+function draw(){
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+
+  for(let paw of paws){
+    ctx.save();
+    // 上下漂浮 + 轻微旋转
+    const floatY = Math.sin(paw.offset) * 5;
+    ctx.translate(paw.x, paw.y + floatY);
+    ctx.rotate(paw.rotation * Math.PI/180);
+    ctx.drawImage(pawImg, -20, -20, 40, 40);
+    ctx.restore();
+
+    // 沿 x 轴移动，循环回到左边
+    paw.x += paw.speed;
+    if(paw.x > canvas.width + 20) paw.x = -20;
+    paw.offset += 0.05; // 控制漂浮速度
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// 等 SVG 加载完成
+pawImg.onload = () => {
+  draw();
+};
+</script>
+</body>
+</html>
