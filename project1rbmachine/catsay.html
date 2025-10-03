@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catsay: cats are the BEEEST!!!</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  </head>
+
+  <body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="navbar_container">
+        <a href="/" id="navbar_logo">Catsay</a>
+      <ul class="navbar_menu">
+        <li class="navbar_item">
+          <a href="/catsayabout.html" class="navbar_links">About</a> <!-- 无法找到文件？ -->
+        </li>
+      </ul>
+      </div>
+    </nav>
+
+
+    <!-- 开始页面 -->
+    <div id="start-page">
+      <h1>Let's see what cats say!</h1>
+      <button id="start" class="button" onclick="startPlay()">Start</button>
+    </div>
+
+    <!-- 结果页面 -->
+    <div id="result-page", style="display: none;">
+      <div id="poster">
+        <img 
+        id="cat-image-show" 
+        src="${}" 
+        alt="${cat picture}" >  <!-- 猫图,需要css文件设置style -->
+
+        <div class="overlay">
+
+          <div id="cat-fact-display"></div>    <!-- 猫fact -->
+
+          <div class="buttongroup">
+             <button id="again" class="paw-button" onclick="startPlay()">
+              <div class="paw-container">
+               <!-- SVG 猫爪 -->
+               <svg viewBox="0 0 1304 1024" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+               <path d="M0 446.49054a171.094255 145.438963 90 1 0 290.877927 0 171.094255 145.438963 90 1 0-290.877927 0Z"></path>
+               <path d="M1126.923945 768.927392a140.307905 171.094255 12.07 1 0 71.553865-334.6237 140.307905 171.094255 12.07 1 0-71.553865 334.6237Z"></path>
+               <path d="M353.069892 190.999222a190.999222 149.508423 90 1 0 299.016847 0 190.999222 149.508423 90 1 0-299.016847 0Z"></path>
+               <path d="M887.858242 431.109679a149.508423 190.999222 6.71 1 0 44.634256-379.38186 149.508423 190.999222 6.71 1 0-44.634256 379.38186Z"></path>
+               <path d="M962.073434 786.025054c-10.704449 162.07067-167.201728 249.033261-352.36216 236.736415s-328.918531-118.899006-318.479481-281.058143 173.305918-264.957235 354.662289-271.415291c187.549028 37.686739 326.883801 153.577883 316.179352 315.737019z"></path>
+               </svg>
+
+               <!-- 文字悬浮在猫爪上 -->
+               <span class="paw-text">Again</span>
+              </div>
+             </button> 
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <main id="main-content"></main>
+
+
+    <script>
+      //按钮们
+      const startButton = document.getElementById('start')
+      const saveButton = document.getElementById('save')
+      const againButton = document.getElementById('again')
+
+      //内容
+      const startPage = document.getElementById('start-page')
+      const mainContent = document.getElementById('main-content')
+      const startPlay = ()=>{
+            // 隐藏开始页面
+            document.getElementById('start-page').style.display = 'none';
+            // 显示游戏内容
+            document.getElementById('result-page').style.display = 'block';
+      }
+      const goHome = () => {//有问题！！！！点不动哇
+            // 回到开始页面
+            document.getElementById('start-page').style.display = 'block';
+            // 隐藏游戏内容
+            document.getElementById('result-page').style.display = 'none';
+      }
+
+
+
+
+
+      //一起搜索！
+      const fetchAll =() =>{
+        fetchCataas();
+        fetchCatfact();
+      }
+
+
+      //猫事实catfact
+      const fetchCatfact = () =>{
+        fetch ('https://meowfacts.herokuapp.com')
+        .then(response => response.json())
+        .then(catfactdata => appendCatfact(catfactdata))
+      }
+
+      const appendCatfact = (catfactdata) =>{
+        //console.log(catfactdata)
+
+        let catFact = catfactdata.data[0]
+        // 把文字放到div元素里
+        catFact += " Moew.";
+
+        document.getElementById('cat-fact-display').textContent = catFact;
+
+        console.log(catFact)
+      }
+
+
+      //猫图片cataas
+      const fetchCataas = () =>{
+        fetch ('https://cataas.com/cat', {
+                    method: 'GET',
+                    headers: {
+                        'accept':'application/json'
+                    }
+                })
+        .then(response => response.json())
+        .then(cataasdata => appendCataas(cataasdata))
+      }
+
+      const appendCataas = (cataasdata) =>{
+        //console.log(cataasdata)
+
+        let catPic = cataasdata.url
+        // 把图片URL放到img元素里
+        document.getElementById('cat-image-show')
+        .src = `${catPic}`;
+
+        //let catDate = cataasdata.created_at
+
+        //console.log(new Date(catDate))
+      }
+
+
+      startButton.addEventListener('click', fetchAll)
+      againButton.addEventListener('click', fetchAll)
+      
+
+    </script>
+  </body>
+</html>
