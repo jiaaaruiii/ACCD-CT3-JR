@@ -216,3 +216,26 @@ h1 {
   align-items: center;     /* 水平居中 */
  
 }
+
+
+#randomEvent {
+  max-width: 70%;
+  color: rgb(166, 166, 166);
+  background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+  padding: 15px 25px;
+  border-radius: 8px;
+  word-wrap: break-word;
+  line-height: 1.6;
+  text-align: left; /* 历史事件左对齐更好看 */
+  margin: 0 auto; /* 让它横向居中 */
+}
+
+.history-container {
+  display: flex;
+  flex-direction: column; /* 竖向排列 */
+  gap: 20px; /* 每个子元素之间都有 20px 间距 */
+}
+
+#sameDay{
+    color:rgb(166, 166, 166);
+}

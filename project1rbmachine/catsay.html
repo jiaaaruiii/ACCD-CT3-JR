@@ -58,6 +58,11 @@
 
           </div>
 
+          <div class="history-container">
+            <div id="sameDay">Same Date in History as Cat Pic: </div>
+            <div id="randomEvent"></div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -131,6 +136,8 @@
         .then(cataasdata => appendCataas(cataasdata))
       }
 
+      let year, month, day;
+
       const appendCataas = (cataasdata) =>{
         //console.log(cataasdata)
 
@@ -139,9 +146,50 @@
         document.getElementById('cat-image-show')
         .src = `${catPic}`;
 
-        //let catDate = cataasdata.created_at
 
-        //console.log(new Date(catDate))
+
+        const catDate = cataasdata.created_at
+
+        console.log(new Date(catDate))
+
+        const dateobj = new Date(catDate)
+        year = dateobj.getFullYear()//2025年
+        month = dateobj.getMonth() + 1 //几月需要+2
+        day = dateobj.getDate()//几号
+
+        console.log(`解析的日期: ${year}-${month}-${day}`); // 添加调试信息
+
+        fetchQuote();
+      }
+
+      //名言quote
+      const fetchQuote = () =>{
+        fetch (`http://history.muffinlabs.com/date/${month}/${day}`, {
+          //method: 'GET'
+        })
+        .then(response => response.json())
+        .then(quotedata => appendQuote(quotedata))
+      }
+
+      const appendQuote = (quotedata) => {
+        console.log(quotedata)
+
+        // 获取 Events 数组
+        const events = quotedata.data.Events;
+    
+         // 生成随机索引
+        const randomIndex = Math.floor(Math.random() * events.length);
+    
+        // 获取随机的一个 event
+        const randomEvent = events[randomIndex];
+    
+        console.log('随机事件:', randomEvent);
+        console.log('年份:', randomEvent.year);
+        console.log('事件描述:', randomEvent.text);
+
+        document.getElementById('randomEvent').textContent = randomEvent.text;
+        document.getElementById('randomEventYear').textContent = randomEvent.year;
+
       }
 
 
