@@ -95,6 +95,7 @@ html, body {
     border-radius: 4px;
     background-color: #f77062; /* 实心橙红色 */
     color: #fff;
+    font-size: 1rem;
 }
 
 .buttongroup {
@@ -189,6 +190,7 @@ html, body {
 
 .paw-container:hover svg {
   transform: scale(1.2);
+  fill: #ff5a45; /* 悬停加深 */
 }
 
 /* 文字悬浮在中央 */
@@ -214,9 +216,14 @@ h1 {
   flex-direction: column; /* 如果有多行内容 */
   justify-content: center; /* 垂直居中 */
   align-items: center;     /* 水平居中 */
- 
+
 }
 
+
+#start-page h1 {
+  margin-top: 20%;
+  margin-bottom: 5%;
+}
 
 #randomEvent {
   max-width: 70%;
