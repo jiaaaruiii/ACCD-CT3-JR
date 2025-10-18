@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>猫爪随机路径动画</title>
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #1a1a1a;
-    overflow-x: hidden;
-  }
-  .bottom-container {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    background: url('your-bottom-image.png') no-repeat center bottom;
-    background-size: cover;
-  }
-  canvas {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    pointer-events: none;
-  }
-</style>
-</head>
+  <head>
+  <meta charset="UTF-8">
+  <title>猫爪随机路径动画</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #1a1a1a;
+        overflow-x: hidden;
+      }
+      .bottom-container {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background: url('your-bottom-image.png') no-repeat center bottom;
+        background-size: cover;
+      }
+      canvas {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
 <body>
-<div class="bottom-container">
-  <canvas id="pawCanvas"></canvas>
-</div>
+  <div class="bottom-container">
+    <canvas id="pawCanvas"></canvas>
+  </div>
 
 <script>
 // Canvas 初始化
@@ -75,7 +75,7 @@ const paws = paths.map(p => ({
   x: p.x,
   y: p.y,
   offset: Math.random()*Math.PI*2,
-  rotation: Math.random()*20 - 10,
+  rotation: Math.PI*0.5,
   speed: 1 + Math.random()*0.5
 }));
 
@@ -88,7 +88,7 @@ function draw(){
     // 上下漂浮 + 轻微旋转
     const floatY = Math.sin(paw.offset) * 5;
     ctx.translate(paw.x, paw.y + floatY);
-    ctx.rotate(paw.rotation * Math.PI/180);
+    ctx.rotate(paw.rotation);
     ctx.drawImage(pawImg, -20, -20, 40, 40);
     ctx.restore();
 
