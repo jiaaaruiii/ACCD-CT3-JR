@@ -36,15 +36,25 @@
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
 
-            
+
+            // 判断是不是手机
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            let size;
+            if (isMobile) {
+                // 手机竖屏：用宽度的90%
+                size = Math.min(window.innerWidth * 0.9, 600);
+            } else {
+                // 电脑横屏：用高度的70%
+                size = Math.min(window.innerHeight * 0.7, 800);
+            }
+
+
+            //手机电脑的摄像头不一样
+            const facingMode = isMobile ? "environment" : "user";
+
             // Convenience function to setup a webcam
             const flip = isMobile ? false : true; // whether to flip the webcam
-            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-
-
-            // 判断是不是手机，是就用后置
-            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            const facingMode = isMobile ? "environment" : "user";
+            webcam = new tmImage.Webcam(size, size, flip); // width, height, flip
 
             await webcam.setup({ facingMode: facingMode }); // request access to the webcam
             await webcam.play();
