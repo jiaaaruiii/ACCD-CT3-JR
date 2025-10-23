@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catsay: cats are the BEEEST!!!</title>
+    <title>RecoMachine</title>
     <link rel="stylesheet" href="">
   </head>
 
@@ -11,7 +11,10 @@
   <body>
     <div>Teachable Machine Image Model</div>
     <button type="button" onclick="init()">Start</button>
+    
+
     <div id="webcam-container"></div>
+    <div id="conclusion" style="font-size: 24px; font-weight: bold; margin-top: 20px;"></div>
     <div id="label-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
@@ -83,6 +86,21 @@
                     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].innerHTML = classPrediction;
             }
+
+            const artProb = prediction[0].probability;  // 假设 art 是第一个
+            const notartProb = prediction[1].probability;  // notart 是第二个
+            const diff = artProb - notartProb;
+            
+            let conclusion;
+            if (diff > 0.3) {
+                conclusion = "Real Art 🎨";
+            } else if (diff >= -0.3 && diff <= 0.3) {
+                conclusion = "A Controversial Piece 🤔";
+            } else {
+                conclusion = "Daily Life 📷";
+            }
+
+            document.getElementById("conclusion").innerHTML = "Conclusion: " + conclusion;
         }
     </script>
 
