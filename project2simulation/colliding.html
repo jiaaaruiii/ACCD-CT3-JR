@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colliding Simulation Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     </head>
 
     <body>
+
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                
+            </code></pre>
+        </div>
+
 
         <h3></h3>
         <p></p>
@@ -16,59 +26,187 @@
         <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1130424660?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="J.R.-CT3-Colliding"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
         <h2>Brief</h2>
-        <p>我想用Unity simulate陨石撞击地球的场景，其中包含了三个需要模拟的部分。撞击前：经过的陨石被地球的引力场捕获；撞击时：冲击力把地面撞出crater，陨石碎裂四散；撞击后：气流冲击与地球变为岩浆地面。</p>
+        <p>我计划在 Unity 中模拟一个陨石撞击地球的场景，整个过程分为三个阶段：</p>
+        <ul>
+        <li>撞击前：陨石接近地球时，被地球的重力场捕获，轨迹逐渐偏转。</li>
+        <li>撞击时：陨石与地表发生剧烈碰撞，冲击力使地面形成一个 crater，同时陨石本身碎裂并向外飞散。</li>
+        <li>撞击后：冲击产生的气流扩散开来，地表温度上升，原本的地面逐渐变为岩浆状态。</li>
+        </ul>   
 
 
 
         <h2>Gravity Field</h2>
-        <p>重力在人类的视角永远向下，也就是Unity自带的模拟部分。但在星球尺度上来看，特别是陨石vs地球的量级来说，陨石受引力一直向地球球心方向。并且根据万有引力的计算公式，可以得出a（陨石加速度）=GM/r^2，也就是说只有两者之间的距离是一个在运动中的变量。</p>
+        <p>在一般的人类视角中，重力总是"向下"的，这也是 Unity 默认物理系统所模拟的方向。但在星球尺度下，这种假设不再适用。对于"陨石 vs 地球"这种量级的系统，陨石所受的引力始终指向地球的球心，而不是某个固定的"下方"。</p>
+
+        <p>根据万有引力定律，陨石的加速度可以表示为：a = GM / r²，<br>
+        其中 G 为引力常数，M 为地球质量，r 为陨石与地心之间的距离。由此可知，唯一随时间变化的量是 r，也正是它决定了陨石运动轨迹的关键。</p>
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">using Unity.VisualScripting;
+                using UnityEngine;
+                using UnityEngine.UIElements;
+
+                public class GravityField : MonoBehaviour
+                {
+                    //G*M constant
+                    public float EarthMass = 1.0f;
+                    public float Gconstant = 1.0f;
+
+                    private float Radius;
+                    private Vector3 PosE;
+                    private Vector3 PosM;
+
+                    private Vector3 DistanceVector;
+                    private Vector3 Dir;
+                    private float Dis;
+
+                    private Vector3 Gravity;
+
+
+
+                    
+                    void Start()
+                    {
+                        GameObject earthObj = GameObject.Find("Earth");
+                        PosE = earthObj.transform.position;
+                    }
+                    
+                    void OnTriggerEnter (Collider other)
+                    {
+                        if (other.CompareTag("Target")) //meteorites have the tag "Target"
+                        {
+                            Rigidbody Meteoroid = other.GetComponent&lt;Rigidbody&gt;();
+                        }
+                            
+                    }
+
+                    
+                    void OnTriggerStay(Collider other)
+                    {
+                        if (other.CompareTag("Target"))
+                        {
+                            Rigidbody Meteoroid = other.GetComponent&lt;Rigidbody&gt;();
+                            PosM = Meteoroid.transform.position;
+
+                            DistanceVector = PosE - PosM;
+                            Dir = DistanceVector.normalized;
+                            Dis = Vector3.Distance(PosE, PosM);
+                            float GM = Gconstant * EarthMass;
+                            float a = GM / (Dis * Dis);
+                            Gravity = a * Dir;
+
+                            Meteoroid.AddForce(Gravity, ForceMode.Acceleration);
+                        }
+                    }
+            }</code></pre>
+        </div>
 
 
 
         <h2>陨石的初速度</h2>
-        <p>给陨石增加了初始的impuse类型Force，这样就能出现它在运行时被捕获产生的曲线运动路径。不过有时候力量太大或者方向不对，陨石也会最终飞出重力场，摆脱引力；又或者是变成地球的卫星，以地球为椭圆的其中一个圆心，就像比较理想状态下的天体运动。</p>
+        <p>在实现上，我为陨石施加了一个初始的Impulse 类型Force，以模拟其进入地球引力场后的运动状态。通过这种方式，陨石在运行过程中会呈现出被地球引力捕获的曲线轨迹。然而，不同的初始条件会导致截然不同的结果：当初始力过大或方向偏离时，陨石可能飞出地球的引力范围，摆脱引力束缚；而在某些理想情况下，陨石会被引力捕获，成为地球的卫星，以地球为椭圆轨道的一个焦点，形成类似天体力学中的轨道运动。</p>
 
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                using UnityEngine;
+
+                public class AddForce : MonoBehaviour
+                {
+                    public Vector3 force = new Vector3(0, 0, 0);  // 力的方向和大小
+                    public ForceMode mode = ForceMode.Impulse; // 推一把
+
+                    void Start()
+                    {
+                        Rigidbody rb = GetComponent<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.AddForce(force, mode);
+                        }
+                    }
+                }
+
+            </code></pre>
+        </div>
 
 
         <h2>Deform</h2>
-        <p>我先学习了下面的视频，以其展示的代码为基础。</p>
+        <p>我首先参考了以下视频教程，并以其中展示的代码为基础：</p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/-dsRIyzAcqg?si=mRkwRGPl3w9XyhLt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
         <h3>运行速度优化</h3>
-        <p>虽然模拟讲求真实，但由于一开始没有注意地球的mesh面数已经高达上万面，原来的代码在每个撞击点都要遍历一遍所有的顶点来计算凹陷，这样很难在电脑上运行起来，特别是加入了50多个陨石碎片之后，碰撞的数量已经足够让我的unity崩溃并闪退。</p>
+        <p>虽然物理模拟的目标是尽可能接近真实，但在实际实现中遇到了一些性能瓶颈。
+        起初我没有注意到地球模型mesh的面数已经超过上万。原本的代码在每次撞击时，都会遍历所有顶点来计算地表的凹陷效果。
+        这种算法在单次碰撞时尚可运行，但当场景中加入了超过 50 个陨石碎片后，碰撞次数急剧上升，导致性能急剧下降——最终甚至会造成 Unity 崩溃或闪退</p>
         <p>所以我将其简化为仅计算第一次撞击</p>
-        <p>并且使用三维空间的哈希算法来改变遍历范围，理论上来说它把空间分割成以deformRadius的长度为边长的正方体，那么只需要检测撞击点周围的27个正方体里，在衰减范围内的点（不过我还在尝试弄懂这部分，我不太确定代码是否真的起作用了，以及这是否是最简单的方法）。有许多MMO游戏在采用这个算法。</p>
+        <p>并且使用三维空间的哈希算法来缩小顶点遍历范围，理论上来说它把空间分割成多个以deformRadius为边长的正方体。这样一来，在计算地表凹陷时，只需要检测撞击点所在及其周围相邻的，共计27个正方体中的顶点，并在衰减范围内执行变形计算即可。（不过我还在尝试弄懂这部分，我不太确定代码是否真的起作用了，以及这是否是最简单的方法）。意外了解到有许多MMO游戏在采用这种算法。</p>
 
         <h3>crater形状</h3>
-        <p>原有代码里，针对crater的形状计算仅仅是线性衰减，没有考虑到坑洞会更像一个碗形，或者碟形，所以底部形状以及和周围地面的衔接需要更平滑</p>
+        <p>原有代码里，针对crater的形状计算仅仅是线性衰减</p>
+        <p>坑洞会更像一个碗形，或者碟形，所以底部形状以及和周围地面的衔接需要更平滑</p>
 
 
         <h2>陨石碎裂</h2>
         <p>这个部分到最后也没有解决，在此列出我的一些尝试和想法。</p>
 
         <h3>破碎模型替换</h3>
-        <p>这是我的第一个想法，因为之前在游戏制作过程中也遇到过类似的问题：一场战斗开始时，场景周围的装饰石块需要完全破碎并向周围爆炸落下。之前采用的处理方式是，在完整模型的基础上，制造一个已经分裂成碎片的模型，并且在事件触发时替换成碎片模型（因为碎片模型无法和原有模型法线完全相同，视觉上裂缝十分明显），并且播放设计好的破碎动画。动画并不是实时的物理碰撞计算，所以我想采用相同的替换逻辑，只是需要在碰撞后一点点的时间将位置和速度传递给碎片就好。</p>
-        <p>然而问题就在传递上，碎片有一个共同的Parent Empty Object，但是它由于本身不具有实体模型，所以无法真正使用rigid body component，它无法被Gravity Field作用吸引力，也不会让它的子物体碎片产生和对应物理系统里的速度和碰撞</p>
+        <p>在之前的游戏制作过程中，我曾遇到过类似的问题：当一场战斗开始时，场景中的装饰石块需要在瞬间破碎并向外爆散。当时采用的做法是：在完整模型的基础上，预先制作一个已分裂的碎片模型，并在事件触发时将其替换。由于碎片模型的法线与原模型并不完全一致，替换后会出现明显的裂缝，因此我们通过播放预设的破碎动画来掩盖这种视觉不连续。这段动画并非基于实时物理计算，而是纯粹的视觉效果。<br>
+        因此，在当前的陨石撞击项目中，我希望沿用类似的替换逻辑：在碰撞发生后，将完整模型位置和速度数据传递给碎片模型，从而实现一种近似物理的破碎效果。</p>
+
+        <p>然而，问题出在数据传递上。碎片模型共有一个 Parent Empty Object，但由于该对象本身不具有可渲染模型，因此无法附加 Rigidbody 组件。结果是，Parent 对象无法受到 Gravity Field 的引力作用，其子碎片也无法通过父对象获得与物理系统一致的速度或碰撞响应。</p>
         <p>不过我仍然觉得这是最合理的解决方案</p>
 
         <h3>破碎模型整体移动</h3>
-        <p>这是现在使用的方案，但问题在于它们实际上无法真正整体移动。由于上文提到的Parent Empty Object问题，它们无法利用这个“文件夹”来整体移动。所以我给每个碎片都挂载了rigid body和collider，让它们受到重力的吸引。但是一旦速度方向和引力方向不一致，它们很容易就在空中提前分开了，变成一片迷你陨石带。再加上有时候初速度太大，它们在引力作用下彻底变成了行星环就像土星的腰带一样，哇简直是真正的危险太空垃圾</p>
+        <p>这是目前采用的方案，但仍存在一些限制。由于前文提到的 Parent Empty Object 问题，碎片无法依靠父对象整体移动。为此，我为每个碎片单独添加了 Rigidbody 和 Collider，使它们能够受到重力的作用。然而，这种方法也带来新的挑战：当碎片的速度方向与重力方向不一致时，它们很容易在空中提前分散，形成一片“迷你陨石带”。如果初速度过大，碎片甚至可能在地球引力作用下形成类似行星环的结构，就像土星的腰带一样。</p>
         
         <h3>真正的实时碎裂</h3>
-        <p>一年前我确实看到过这种unity插件演示，这或许也是一个可行的方向，不过仔细想想好像也是需要生成一堆子物体以及传递坐标和速度</p>
+        <p>一年前，我确实看到过类似的 Unity 插件演示，这可能也是一个可行的方向。不过仔细思考后，我发现这种方法依然需要生成大量子物体，并且将位置和速度数据进行传递，才能实现类似的效果。</p>
 
 
 
         <h2>Impact</h2>
         <h3>结合scripts和Shader Graph</h3>
-        <p>因为涉及到视觉效果的部分，我一开始打算写shader文件，但里面不仅包含了运行逻辑，还需要掌握图形学知识，我觉得还是用shader graph能在更短的时间内完成效果，也更加直观。所以问题就变成了，如何暴露scripts中撞击点的信息，并让shader graph获取。答案是在scripts中把数据传送给material部分，并且保证shader graph中参数的命名完全相同</p>
-        <p>一开始我发现有sub graph，我打算把Impact相关数据传输到里面，这样main shader graph就很整洁，最后发现sub graph并不具备这种功能，我又被AI的建议糊弄了</p>
+        <p>由于涉及视觉效果，我一开始打算直接编写 shader 文件，但发现这样不仅要处理运行逻辑，还需要较深的图形学知识。因此，我选择使用 Shader Graph，这样可以在更短时间内实现效果，而且更加直观。问题随之而来：如何将 scripts 中的撞击点信息暴露给 Shader Graph。解决方法是在 scripts 中将数据传递给 material，并确保 Shader Graph 中的参数命名与 scripts 中完全一致，从而实现数据同步。</p>
+        <p>一开始，我注意到 Shader Graph 中有 Sub Graph 功能，并打算将与 Impact 相关的数据传递到 Sub Graph 中，这样主 Shader Graph 可以保持整洁。然而，后来发现 Sub Graph 并不具备接收这种外部数据的功能，我又被AI的建议糊弄了</p>
 
         <h3>冲击波形状</h3>
-        <p>shader graph可以获得物体空间信息，所以一旦有了Impact的数据就很顺利了，使用时间*距离就能得到一个不断从撞击点扩大的圆形，冲击波则是这个基础上，两个圆形的差值</p>
+        <p>Shader Graph 可以直接获取物体空间信息，因此一旦拥有了 Impact 数据，效果的实现就非常顺利。通过时间乘以距离（time × distance），可以生成一个从撞击点不断扩大的圆形区域。基于这个圆形，再计算两个圆形的差值即可模拟冲击波的扩散效果。</p>
+        <p>最初，我并没有打算使用 Shader Graph 来制作冲击波，而是通过计算每个点到撞击点的距离，并在撞击点周围放置粒子特效（particle effect）来模拟烟雾。然而，这种方法存在明显的问题。随着圆圈不断扩展，每个粒子特效只从一个点发射粒子，因此需要大量点才能保证视觉上圆圈的完整与连续。而随着圆圈周长增大，每一圈都必须增加更多的特效 prefab，并且各圈之间需要保持紧密排列，才能实现向外扩散的圆形效果。随着几圈同时存在，场景中的粒子数量迅速膨胀，导致性能下降，非常容易出现卡顿。</p>
 
         <h3>材质切换</h3>
-        <p>将冲击波形状作为mask，从scripts获取的撞击发生ture/false判断作为判定值，碰撞前使用材质1，碰撞后使用材质2。当然这里的材质是很笼统的称呼，实际上每个材质属性都应该逐个计算输出</p>
+        <p>我将冲击波的形状作为一个 mask，并利用从 scripts 获取的撞击状态true/false作为判定条件：在碰撞发生前使用材质1，碰撞后切换为材质2。当然，这里的“材质”只是一个笼统的称呼，实际上每个材质属性都需要单独计算并输出，以实现更精确的视觉效果。</p>
         <p>关于岩浆材质制作视频教程</p>
         
+
+
+
+
+        <!-- 代码展示和可复制 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+        <script>
+            hljs.highlightAll();
+
+            function copyCode() {
+                const codeBlock = document.querySelector('code');
+                const text = codeBlock.textContent;
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.querySelector('.copy-btn');
+                    btn.textContent = 'Copied！';
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    alert('Copy Failed');
+                });
+            }
+        </script>
+
+
     </body>
 </html>
