@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colliding Simulation Document</title>
+    </head>
+
+    <body>
+
+        <h3></h3>
+        <p></p>
+        
+        <h1>Colliding Simulation Document</h1>
+
+        <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1130424660?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="J.R.-CT3-Colliding"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
+        <h2>Brief</h2>
+        <p>我想用Unity simulate陨石撞击地球的场景，其中包含了三个需要模拟的部分。撞击前：陨石被地球的引力场捕获；撞击时：冲击力把地面撞出crater；撞击后：气流冲击与地球变为岩浆地面</p>
+
+        <h2>Gravity Field</h2>
+        <p>重力在人类的视角永远向下，也就是Unity自带的模拟部分。但在星球尺度上来看，特别是陨石vs地球的量级来说，陨石受引力一直向地球球心方向。并且根据万有引力的计算公式，可以得出a（陨石加速度）=GM/r^2，也就是说只有两者之间的距离是一个在运动中的变量。</p>
+
+        <h2>Deform</h2>
+        <p>我先学习了下面的视频，以其展示的代码为基础</p>
+        <h3>运行速度优化</h3>
+        <p>虽然模拟讲求真实，但由于一开始没有注意地球的mesh面数已经高达上万面，原来的代码在每个撞击点都要遍历一遍所有的顶点来计算凹陷，这样很难在电脑上运行起来</p>
+        <p>所以我将其简化为仅计算第一次撞击</p>
+        <p>并且使用三维空间的哈希算法来改变遍历范围（不过我还在尝试弄懂这部分，我不太确定它是否真的起作用了）</p>
+
+        <h2>Impact</h2>
+        <h3>结合scripts和Shader Graph</h3>
+        <p></p>
+        <h3>材质</h3>
+        
+        
+    </body>
+</html>
