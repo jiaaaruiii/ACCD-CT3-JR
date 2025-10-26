@@ -5,33 +5,230 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colliding Simulation Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #090909;
+            color: #fff;
+            font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 60px;
+        }
+
+        /* Video Section */
+        .video-wrapper {
+            position: relative;
+            padding: 56.25% 0 0 0;
+            margin-bottom: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Main Title */
+        h1 {
+            font-size: 48px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 128px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-family: 'SF Compact Rounded', 'Lato', sans-serif;
+        }
+
+        /* Section Headers */
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 96px;
+            margin-bottom: 16px;
+            font-family: 'SF Compact Rounded', 'Lato', sans-serif;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 64px;
+            margin-bottom: 12px;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        ul {
+            margin: 16px 0 16px 24px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 15px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+        }
+
+        /* Images */
+        img {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 24px 0;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+
+        /* Code Container */
+        .code-container {
+            position: relative;
+            background-color: #0d1117;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(88, 166, 255, 0.15);
+            color: #58a6ff;
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: rgba(88, 166, 255, 0.25);
+            border-color: rgba(88, 166, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn.copied {
+            background: rgba(46, 160, 67, 0.2);
+            color: #3fb950;
+            border-color: rgba(46, 160, 67, 0.4);
+        }
+
+        pre {
+            margin: 0;
+            padding-right: 80px;
+            overflow-x: auto;
+        }
+
+        pre code {
+            font-size: 13px;
+            line-height: 1.6;
+            font-family: 'SF Mono', Consolas, Monaco, monospace;
+        }
+
+        /* Video Embeds */
+        iframe {
+            width: 100%;
+            max-width: 100%;
+            height: 315px;
+            border-radius: 12px;
+            margin: 24px 0;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+            display: block;
+        }
+
+        /* Section Card Style */
+        .section-card {
+            background-color: rgba(33, 38, 45, 0.4);
+            border-radius: 20px;
+            padding: 32px;
+            margin: 32px 0;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            iframe {
+                height: 200px;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection Color */
+        ::selection {
+            background: rgba(88, 166, 255, 0.3);
+            color: #fff;
+        }
+    </style>
+
     </head>
 
     <body>
-
-
-        <div class="code-container">
-            <button class="copy-btn" onclick="copyCode()">Copy</button>
-            <pre><code class="language-csharp">
-                
-            </code></pre>
-        </div>
-
-
-        <h3></h3>
-        <p></p>
-        
-        <h1>Colliding Simulation Document</h1>
-
         <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1130424660?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="J.R.-CT3-Colliding"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-
+        
+    <div class="container">
+        <h1>Colliding Simulation Document</h1>
+      
         <h2>Brief</h2>
-        <p>我计划在 Unity 中模拟一个陨石撞击地球的场景，整个过程分为三个阶段：</p>
-        <ul>
-        <li>撞击前：陨石接近地球时，被地球的重力场捕获，轨迹逐渐偏转。</li>
-        <li>撞击时：陨石与地表发生剧烈碰撞，冲击力使地面形成一个 crater，同时陨石本身碎裂并向外飞散。</li>
-        <li>撞击后：冲击产生的气流扩散开来，地表温度上升，原本的地面逐渐变为岩浆状态。</li>
-        </ul>   
+        <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; align-items: flex-start;">
+            <div style="flex: 1; margin: 0; padding: 0;">
+                <p style="margin: 0; padding: 0;"><br>我计划在 Unity 中模拟一个陨石撞击地球的场景，整个过程分为三个阶段：</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>撞击前：陨石接近地球时，被地球的重力场捕获，轨迹逐渐偏转。</li>
+                    <li>撞击时：陨石与地表发生剧烈碰撞，冲击力使地面形成一个 crater，同时陨石本身碎裂并向外飞散。</li>
+                    <li>撞击后：冲击产生的气流扩散开来，地表温度上升，原本的地面逐渐变为岩浆状态。</li>
+                </ul>   
+            </div>
+            <img src="media/brief.png" alt="brief画图" style="flex: 1; min-width: 0; height: auto; object-fit: contain; display: block;">
+        </div>
 
 
 
@@ -106,6 +303,11 @@
 
         <h2>陨石的初速度</h2>
         <p>在实现上，我为陨石施加了一个初始的Impulse 类型Force，以模拟其进入地球引力场后的运动状态。通过这种方式，陨石在运行过程中会呈现出被地球引力捕获的曲线轨迹。然而，不同的初始条件会导致截然不同的结果：当初始力过大或方向偏离时，陨石可能飞出地球的引力范围，摆脱引力束缚；而在某些理想情况下，陨石会被引力捕获，成为地球的卫星，以地球为椭圆轨道的一个焦点，形成类似天体力学中的轨道运动。</p>
+        <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; overflow: hidden;">
+            <img src="media/orbitHit.png" alt="撞击轨道" style="flex: 1; min-width: 0; height: 200px; object-fit: cover;">
+            <img src="media/orbitAway.png" alt="飞离轨道" style="flex: 1; min-width: 0; height: 200px; object-fit: cover;">
+            <img src="media/orbitCircle.png" alt="卫星轨道" style="flex: 1; min-width: 0; height: 200px; object-fit: cover;">
+        </div>
 
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
@@ -139,12 +341,212 @@
         <p>虽然物理模拟的目标是尽可能接近真实，但在实际实现中遇到了一些性能瓶颈。
         起初我没有注意到地球模型mesh的面数已经超过上万。原本的代码在每次撞击时，都会遍历所有顶点来计算地表的凹陷效果。
         这种算法在单次碰撞时尚可运行，但当场景中加入了超过 50 个陨石碎片后，碰撞次数急剧上升，导致性能急剧下降——最终甚至会造成 Unity 崩溃或闪退</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                foreach (ContactPoint point in collision.contacts)
+            {
+                for (int i = 0; i < meshVerticies.Length; i++)
+                {
+                    Vector3 vertexPosition = meshVerticies[i];
+                    Vector3 pointPosition = transform.InverseTransformPoint(point.point);
+                    float distanceFromCollision = Vector3.Distance(vertexPosition, pointPosition);
+                    float distanceFromOriginal = Vector3.Distance(startingVerticies[i], vertexPosition);
+ 
+                    // If within collision radius and within max deform
+                    if (distanceFromCollision < deformRadius && distanceFromOriginal < maxDeform) 
+                    {
+                        float falloff = 1 - (distanceFromCollision / deformRadius) * damageFalloff;
+ 
+                        float xDeform = pointPosition.x * falloff;
+                        float yDeform = pointPosition.y * falloff;
+                        float zDeform = pointPosition.z * falloff;
+ 
+                        xDeform = Mathf.Clamp(xDeform, 0, maxDeform);
+                        yDeform = Mathf.Clamp(yDeform, 0, maxDeform);
+                        zDeform = Mathf.Clamp(zDeform, 0, maxDeform);
+ 
+                        Vector3 deform = new Vector3(xDeform, yDeform, zDeform);
+                        meshVerticies[i] -= deform * damageMultiplier;
+                    }
+                }
+            }
+            </code></pre>
+        </div>
+
         <p>所以我将其简化为仅计算第一次撞击</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                                
+                [Range(0, 10)]
+                public float deformRadius = 0.2f;
+                [Range(0, 10)]
+                public float maxDeform = 0.1f;
+                [Range(0, 1)]
+                public float damageFalloff = 1;
+                [Range(0, 10)]
+                public float damageMultiplier = 1;
+                [Range(0, 100000)]
+                public float minDamage = 1;
+
+                private MeshFilter filter;
+                private MeshCollider coll;
+                private Vector3[] startingVerticies;
+                private Vector3[] meshVerticies;
+                private Dictionary<Vector3Int, List<int>> vertexGrid;
+                private bool hasDeformed = false;
+
+                void OnCollisionEnter(Collision collision)
+                {
+                    // only the first time collision
+                    if (hasDeformed)
+                        return;
+
+                    float collisionPower = collision.impulse.magnitude;
+                    if (collisionPower > minDamage)
+                    {
+                        ContactPoint point = collision.contacts[0];
+                        Vector3 pointPosition = transform.InverseTransformPoint(point.point);
+                        Vector3 impactNormal = transform.InverseTransformDirection(point.normal);
+
+                        // 遍历撞击点周围的格子
+                        Vector3Int centerCell = GetCell(pointPosition);
+                        for (int x = -1; x <= 1; x++)
+                        {
+                            for (int y = -1; y <= 1; y++)
+                            {
+                                for (int z = -1; z <= 1; z++)
+                                {
+                                    Vector3Int cell = centerCell + new Vector3Int(x, y, z);
+
+                                    if (vertexGrid.ContainsKey(cell))
+                                    {
+                                        foreach (int i in vertexGrid[cell])
+                                        {
+                                            Vector3 vertexPosition = meshVerticies[i];
+                                            float distanceFromCollision = Vector3.Distance(vertexPosition, pointPosition);
+                                            float distanceFromOriginal = Vector3.Distance(startingVerticies[i], vertexPosition);
+
+                                            // 在变形半径内且未超过最大变形量
+                                            if (distanceFromCollision < deformRadius && distanceFromOriginal < maxDeform)
+                                            {
+                                                // 计算衰减
+                                                float normalizedDistance = distanceFromCollision / deformRadius;
+                                                float falloff = Mathf.SmoothStep(1, 0, normalizedDistance);
+                                                float deformAmount = falloff * damageMultiplier;
+
+                                                // 沿法线方向变形
+                                                meshVerticies[i] += impactNormal * deformAmount;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        UpdateMeshVerticies();
+                        hasDeformed = true;
+                    }
+                }
+
+                void UpdateMeshVerticies()
+                {
+                    filter.mesh.vertices = meshVerticies;
+                    coll.sharedMesh = filter.mesh;
+                }
+            </code></pre>
+        </div>
+
         <p>并且使用三维空间的哈希算法来缩小顶点遍历范围，理论上来说它把空间分割成多个以deformRadius为边长的正方体。这样一来，在计算地表凹陷时，只需要检测撞击点所在及其周围相邻的，共计27个正方体中的顶点，并在衰减范围内执行变形计算即可。（不过我还在尝试弄懂这部分，我不太确定代码是否真的起作用了，以及这是否是最简单的方法）。意外了解到有许多MMO游戏在采用这种算法。</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                [Range(0, 10)]
+                public float deformRadius = 0.2f;
+
+                private MeshFilter filter;
+                private Vector3[] meshVerticies;
+                private Dictionary<Vector3Int, List<int>> vertexGrid;
+                private float cellSize;
+
+                void Start()
+                {
+                    filter = GetComponent<MeshFilter>();
+                    meshVerticies = filter.mesh.vertices;
+                    
+                    cellSize = deformRadius;
+                    vertexGrid = new Dictionary<Vector3Int, List<int>>();
+                    BuildSpatialGrid();
+                }
+
+                void BuildSpatialGrid()
+                {
+                    for (int i = 0; i < meshVerticies.Length; i++)
+                    {
+                        Vector3Int cell = GetCell(meshVerticies[i]);
+
+                        if (!vertexGrid.ContainsKey(cell))
+                        {
+                            vertexGrid[cell] = new List<int>();
+                        }
+
+                        vertexGrid[cell].Add(i);
+                    }
+
+                    Debug.Log($"空间网格构建完成：{meshVerticies.Length} 个顶点分配到 {vertexGrid.Count} 个格子");
+                }
+
+                Vector3Int GetCell(Vector3 position)
+                {
+                    return new Vector3Int(
+                        Mathf.FloorToInt(position.x / cellSize),
+                        Mathf.FloorToInt(position.y / cellSize),
+                        Mathf.FloorToInt(position.z / cellSize)
+                    );
+                }
+            </code></pre>
+        </div>
 
         <h3>crater形状</h3>
-        <p>原有代码里，针对crater的形状计算仅仅是线性衰减</p>
-        <p>坑洞会更像一个碗形，或者碟形，所以底部形状以及和周围地面的衔接需要更平滑</p>
+        <p>原有代码里，针对crater的形状计算仅仅是线性衰减和多次叠加的钳制</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                // If within collision radius and within max deform
+                if (distanceFromCollision < deformRadius && distanceFromOriginal < maxDeform) 
+                    {
+                        float falloff = 1 - (distanceFromCollision / deformRadius) * damageFalloff;
+ 
+                        float xDeform = pointPosition.x * falloff;
+                        float yDeform = pointPosition.y * falloff;
+                        float zDeform = pointPosition.z * falloff;
+ 
+                        xDeform = Mathf.Clamp(xDeform, 0, maxDeform);
+                        yDeform = Mathf.Clamp(yDeform, 0, maxDeform);
+                        zDeform = Mathf.Clamp(zDeform, 0, maxDeform);
+ 
+                        Vector3 deform = new Vector3(xDeform, yDeform, zDeform);
+                        meshVerticies[i] -= deform * damageMultiplier;
+                    }
+            </code></pre>
+        </div>
+
+        <p>实际上的坑洞会更像一个碗形，或者碟形，所以底部形状以及和周围地面的衔接需要更平滑</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                if (distanceFromCollision < deformRadius && distanceFromOriginal < maxDeform)
+                {
+                    float normalizedDistance = distanceFromCollision / deformRadius;  // 0到1
+                    float falloff = Mathf.SmoothStep(1, 0, normalizedDistance);       // 平滑插值
+
+                    float deformAmount = falloff * damageMultiplier;
+
+                    meshVerticies[i] += impactNormal * deformAmount;
+                }
+            </code></pre>
+        </div>
 
 
         <h2>陨石碎裂</h2>
@@ -155,7 +557,7 @@
         因此，在当前的陨石撞击项目中，我希望沿用类似的替换逻辑：在碰撞发生后，将完整模型位置和速度数据传递给碎片模型，从而实现一种近似物理的破碎效果。</p>
 
         <p>然而，问题出在数据传递上。碎片模型共有一个 Parent Empty Object，但由于该对象本身不具有可渲染模型，因此无法附加 Rigidbody 组件。结果是，Parent 对象无法受到 Gravity Field 的引力作用，其子碎片也无法通过父对象获得与物理系统一致的速度或碰撞响应。</p>
-        <p>不过我仍然觉得这是最合理的解决方案</p>
+        <p>不过我仍然觉得这是最合理的解决方案，只是还需要进一步研究</p>
 
         <h3>破碎模型整体移动</h3>
         <p>这是目前采用的方案，但仍存在一些限制。由于前文提到的 Parent Empty Object 问题，碎片无法依靠父对象整体移动。为此，我为每个碎片单独添加了 Rigidbody 和 Collider，使它们能够受到重力的作用。然而，这种方法也带来新的挑战：当碎片的速度方向与重力方向不一致时，它们很容易在空中提前分散，形成一片“迷你陨石带”。如果初速度过大，碎片甚至可能在地球引力作用下形成类似行星环的结构，就像土星的腰带一样。</p>
@@ -168,16 +570,228 @@
         <h2>Impact</h2>
         <h3>结合scripts和Shader Graph</h3>
         <p>由于涉及视觉效果，我一开始打算直接编写 shader 文件，但发现这样不仅要处理运行逻辑，还需要较深的图形学知识。因此，我选择使用 Shader Graph，这样可以在更短时间内实现效果，而且更加直观。问题随之而来：如何将 scripts 中的撞击点信息暴露给 Shader Graph。解决方法是在 scripts 中将数据传递给 material，并确保 Shader Graph 中的参数命名与 scripts 中完全一致，从而实现数据同步。</p>
-        <p>一开始，我注意到 Shader Graph 中有 Sub Graph 功能，并打算将与 Impact 相关的数据传递到 Sub Graph 中，这样主 Shader Graph 可以保持整洁。然而，后来发现 Sub Graph 并不具备接收这种外部数据的功能，我又被AI的建议糊弄了</p>
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                // ===== 传递撞击数据到 Shader =====
+                // 位置：Deform.cs → OnCollisionEnter()
+                // 作用：将撞击点信息传递给 Shader Graph 用于视觉效果
+
+                // 需要的变量声明
+                [Range(0, 10)]
+                public float deformRadius = 0.2f;
+
+                public Vector3 LastImpactPoint { get; private set; }
+                public Vector3 LastImpactLocalPoint { get; private set; }
+                public Vector3 LastImpactNormal { get; private set; }
+                public float LastImpactTime { get; private set; }
+                public bool HasImpact { get; private set; } = false;
+
+                private Material material;
+
+                void Start()
+                {
+                    Renderer renderer = GetComponent<Renderer>();
+                    if (renderer != null)
+                    {
+                        material = renderer.material;
+                        
+                        if (material.HasProperty("_HasImpact"))
+                        {
+                            Debug.Log("Material有_HasImpact属性");
+                        }
+                        else
+                        {
+                            Debug.LogError("Material没有_HasImpact属性！检查ShaderGraph");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("没有Renderer组件！");
+                    }
+                }
+
+                void OnCollisionEnter(Collision collision)
+                {
+                    if (collision.contacts.Length > 0)
+                    {
+                        ContactPoint point = collision.contacts[0];
+                        Vector3 pointPosition = transform.InverseTransformPoint(point.point);
+                        Vector3 impactNormal = transform.InverseTransformDirection(point.normal);
+
+                        // 记录撞击点信息
+                        LastImpactPoint = point.point;
+                        LastImpactLocalPoint = pointPosition;
+                        LastImpactNormal = point.normal;
+                        LastImpactTime = Time.time;
+                        HasImpact = true;
+
+                        // 传递数据到 Material
+                        if (material != null)
+                        {
+                            material.SetVector("_ImpactPoint", pointPosition);
+                            material.SetVector("_ImpactNormal", impactNormal);
+                            material.SetFloat("_ImpactRadius", deformRadius);
+                            material.SetFloat("_ImpactTime", Time.time);
+                            material.SetFloat("_HasImpact", HasImpact ? 1.0f : 0.0f);
+
+                            // 验证是否设置成功
+                            float checkValue = material.GetFloat("_HasImpact");
+                            Debug.Log($"_HasImpact设置为: {checkValue}");
+                        }
+                        else
+                        {
+                            Debug.LogError("material是null！");
+                        }
+                    }
+                }
+            </code></pre>
+        </div>
+
 
         <h3>冲击波形状</h3>
         <p>Shader Graph 可以直接获取物体空间信息，因此一旦拥有了 Impact 数据，效果的实现就非常顺利。通过时间乘以距离（time × distance），可以生成一个从撞击点不断扩大的圆形区域。基于这个圆形，再计算两个圆形的差值即可模拟冲击波的扩散效果。</p>
-        <p>最初，我并没有打算使用 Shader Graph 来制作冲击波，而是通过计算每个点到撞击点的距离，并在撞击点周围放置粒子特效（particle effect）来模拟烟雾。然而，这种方法存在明显的问题。随着圆圈不断扩展，每个粒子特效只从一个点发射粒子，因此需要大量点才能保证视觉上圆圈的完整与连续。而随着圆圈周长增大，每一圈都必须增加更多的特效 prefab，并且各圈之间需要保持紧密排列，才能实现向外扩散的圆形效果。随着几圈同时存在，场景中的粒子数量迅速膨胀，导致性能下降，非常容易出现卡顿。</p>
-
-        <h3>材质切换</h3>
-        <p>我将冲击波的形状作为一个 mask，并利用从 scripts 获取的撞击状态true/false作为判定条件：在碰撞发生前使用材质1，碰撞后切换为材质2。当然，这里的“材质”只是一个笼统的称呼，实际上每个材质属性都需要单独计算并输出，以实现更精确的视觉效果。</p>
-        <p>关于岩浆材质制作视频教程</p>
+        <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; overflow: hidden;">
+            <img src="media/ImpactMask.png" alt="冲击波mask" style="flex: 1; min-width: 0; height: 500px; object-fit: cover;">
+            <img src="media/ImpactWave.png" alt="冲击波" style="flex: 1; min-width: 0; height: 500px; object-fit: cover;">
+        </div>
         
+<div style="display: flex; gap: 10px; margin-top: 20px; padding: 0; width: 100%; box-sizing: border-box; align-items: flex-start;">
+    <p style="flex: 0 0 30%; margin: 0; padding: 0;"><br>最初，我并没有打算使用 Shader Graph 来制作冲击波，而是通过计算与撞击点法线垂直的平面上一个大于地球直径的圆圈，再把圆圈上点的位置投射到地球表面，然后在这些位置上放置粒子特效的prefab模拟烟雾。</p>
+    <img src="media/wave idea.png" alt="垂直面wave原理1" style="flex: 1; min-width: 0; height: auto; object-fit: contain; display: block;">
+</div>
+
+        <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; overflow: hidden;">
+            <img src="media/ParticleWaveMeaning.png" alt="垂直面wave原理2" style="flex: 1; min-width: 0; height: 500px; object-fit: cover;">
+            <img src="media/ParticleWave.png" alt="垂直面wave" style="flex: 1; min-width: 0; height: 500px; object-fit: cover;">
+        </div>
+
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><code class="language-csharp">
+                using UnityEngine;
+
+                /// <summary>
+                /// 球面圆圈投影 - 核心几何算法
+                /// </summary>
+                public class SphereCircleProjection
+                {
+                    private Transform sphereTransform;
+                    private float sphereRadius;
+                    private bool useMeshCollider = false;
+                    private MeshCollider meshCollider;
+
+                    /// <summary>
+                    /// 2.在切平面上生成圆圈点
+                    /// </summary>
+                    private Vector3[] GenerateCirclePoints(Vector3 center, Vector3 normal, float radius, int pointCount)
+                    {
+                        Vector3[] points = new Vector3[pointCount];
+
+                        // 建立切平面的正交基
+                        Vector3 tangent = Vector3.Cross(normal, Vector3.up);
+                        if (tangent.sqrMagnitude < 0.001f)
+                        {
+                            tangent = Vector3.Cross(normal, Vector3.right);
+                        }
+                        tangent.Normalize();
+
+                        Vector3 bitangent = Vector3.Cross(normal, tangent).normalized;
+
+                        // 均匀分布点
+                        for (int i = 0; i < pointCount; i++)
+                        {
+                            float angle = (i * 2f * Mathf.PI) / pointCount;
+                            Vector3 offset = (tangent * Mathf.Cos(angle) + bitangent * Mathf.Sin(angle)) * radius;
+                            points[i] = center + offset;
+                        }
+
+                        return points;
+                    }
+
+                    /// <summary>
+                    /// 3️⃣ 投射点到球体表面
+                    /// </summary>
+                    private Vector3 ProjectToSphere(Vector3 point)
+                    {
+                        if (useMeshCollider && meshCollider != null)
+                        {
+                            // 从点向球心方向发射射线
+                            Vector3 sphereCenter = sphereTransform.position;
+                            Vector3 direction = (sphereCenter - point).normalized;
+
+                            // 射线起点：点的外侧（确保在表面外）
+                            Vector3 rayStart = point + (point - sphereCenter).normalized * 2f;
+
+                            Ray ray = new Ray(rayStart, direction);
+                            RaycastHit hit;
+
+                            if (meshCollider.Raycast(ray, out hit, 10f))
+                            {
+                                return hit.point;
+                            }
+
+                            // 备选：使用 ClosestPoint
+                            return meshCollider.ClosestPoint(point);
+                        }
+                        else
+                        {
+                            // 球体投射（简单快速）
+                            Vector3 direction = (point - sphereTransform.position).normalized;
+                            return sphereTransform.position + direction * sphereRadius;
+                        }
+                    }
+
+                    /// <summary>
+                    /// 获取表面法线
+                    /// </summary>
+                    private Vector3 GetNormalAtPoint(Vector3 surfacePoint)
+                    {
+                        return (surfacePoint - sphereTransform.position).normalized;
+                    }
+
+                    /// <summary>
+                    /// 使用示例：立即生成所有圆圈
+                    /// </summary>
+                    private void SpawnRippleInstant(Vector3 centerPoint, Vector3 normal, int ringCount, float ringSpacing, int particlesPerRing, float particleMultiplier)
+                    {
+                        for (int ring = 0; ring < ringCount; ring++)
+                        {
+                            float radius = ringSpacing * (ring + 1);
+
+                            // 根据圈数增加粒子数量
+                            int particleCount = Mathf.RoundToInt(particlesPerRing * Mathf.Pow(particleMultiplier, ring));
+
+                            Vector3[] ringPoints = GenerateCirclePoints(centerPoint, normal, radius, particleCount);
+
+                            foreach (Vector3 point in ringPoints)
+                            {
+                                Vector3 surfacePoint = ProjectToSphere(point);
+                                Vector3 surfaceNormal = GetNormalAtPoint(surfacePoint);
+
+                                // 在这里使用 surfacePoint 和 surfaceNormal 生成你的特效
+                                // InstantiateEffect(surfacePoint, surfaceNormal);
+                            }
+                        }
+                    }
+                }
+            </code></pre>
+        </div>
+        <p>然而，这种方法存在明显的问题。随着圆圈不断扩展，每个粒子特效只从一个点发射粒子，因此需要大量点才能保证视觉上圆圈的完整与连续。而随着圆圈周长增大，每一圈都必须增加更多的特效 prefab，并且各圈之间需要保持紧密排列，才能实现向外扩散的圆形效果。随着几圈同时存在，场景中的粒子数量迅速增加，导致性能下降，非常容易出现卡顿。</p>
+
+        
+        <h3>材质切换</h3>
+        <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; align-items: flex-start;">
+            <p style="flex: 0 0 30%; margin: 0; padding: 0;"><br>我将冲击波的形状作为一个mask，在碰撞发生前使用材质1，碰撞后mask出现图案切换为材质2。当然，这里的"材质"只是一个笼统的称呼，实际上每个材质属性都需要单独计算并输出，以实现更精确的视觉效果。</p>
+            <img src="media/switchMaterial.png" alt="材质切换" style="flex: 1; min-width: 0; height: auto; object-fit: contain; display: block;">
+        </div>
+
+        <p>关于岩浆材质制作视频教程</p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/pWceFO4_LiQ?si=KzY0Wql-jO1eKQry" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        
+
+    </div>
 
 
 
