@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -220,11 +220,11 @@
         <h2>Brief</h2>
         <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; align-items: flex-start;">
             <div style="flex: 1; margin: 0; padding: 0;">
-                <p style="margin: 0; padding: 0;"><br>我计划在 Unity 中模拟一个陨石撞击地球的场景，整个过程分为三个阶段：</p>
+                <p style="margin: 0; padding: 0;"><br>I plan to simulate a meteor impact on Earth in Unity. The entire process is divided into three stages:</p>
                 <ul style="margin: 0; padding-left: 20px;">
-                    <li>撞击前：陨石接近地球时，被地球的重力场捕获，轨迹逐渐偏转。</li>
-                    <li>撞击时：陨石与地表发生剧烈碰撞，冲击力使地面形成一个 crater，同时陨石本身碎裂并向外飞散。</li>
-                    <li>撞击后：冲击产生的气流扩散开来，地表温度上升，原本的地面逐渐变为岩浆状态。</li>
+                    <li>Before impact: As the meteor approaches Earth, it is captured by the planet's gravitational field, and its trajectory gradually bends.</li>
+                    <li>During impact: The meteor collides violently with the surface, generating a strong shockwave that forms a crater. At the same time, the meteor itself breaks apart and fragments scatter outward.</li>
+                    <li>After impact: The resulting air currents spread outward, the surface temperature rises, and the original terrain gradually transforms into molten lava.</li>
                 </ul>   
             </div>
             <img src="media/brief.png" alt="brief画图" style="flex: 1; min-width: 0; height: auto; object-fit: contain; display: block;">
@@ -233,10 +233,10 @@
 
 
         <h2>Gravity Field</h2>
-        <p>在一般的人类视角中，重力总是"向下"的，这也是 Unity 默认物理系统所模拟的方向。但在星球尺度下，这种假设不再适用。对于"陨石 vs 地球"这种量级的系统，陨石所受的引力始终指向地球的球心，而不是某个固定的"下方"。</p>
+        <p>From a typical human perspective, gravity is always “downward,” which is also the default direction simulated by Unity’s physics system. However, this assumption no longer holds true on a planetary scale. In a system like “meteor vs. Earth,” the gravitational force acting on the meteor always points toward the Earth's center, rather than any fixed “down” direction.</p>
 
-        <p>根据万有引力定律，陨石的加速度可以表示为：a = GM / r²，<br>
-        其中 G 为引力常数，M 为地球质量，r 为陨石与地心之间的距离。由此可知，唯一随时间变化的量是 r，也正是它决定了陨石运动轨迹的关键。</p>
+        <p>According to the law of universal gravitation, the acceleration of the meteor can be expressed as:a = GM / r²,<br>
+        G is the gravitational constant, M is the mass of the Earth, and r is the distance between the meteor and the Earth's center. Therefore, the only quantity that changes over time is r, which is also the key factor determining the meteor's trajectory.</p>
 
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
@@ -301,8 +301,8 @@
 
 
 
-        <h2>陨石的初速度</h2>
-        <p>在实现上，我为陨石施加了一个初始的Impulse 类型Force，以模拟其进入地球引力场后的运动状态。通过这种方式，陨石在运行过程中会呈现出被地球引力捕获的曲线轨迹。然而，不同的初始条件会导致截然不同的结果：当初始力过大或方向偏离时，陨石可能飞出地球的引力范围，摆脱引力束缚；而在某些理想情况下，陨石会被引力捕获，成为地球的卫星，以地球为椭圆轨道的一个焦点，形成类似天体力学中的轨道运动。</p>
+        <h2>The Initial Velocity of the Meteor</h2>
+        <p>In implementation, I applied an initial Impulse-type Force to the meteor to simulate its motion after entering Earth's gravitational field. In this way, the meteor exhibits a curved trajectory as it becomes influenced by Earth's gravity. However, different initial conditions can lead to drastically different outcomes: if the initial force is too strong or misaligned, the meteor may escape Earth's gravitational range and break free from its pull; under certain ideal conditions, however, the meteor can be captured by gravity and become a satellite of Earth, moving in an elliptical orbit with Earth at one of its foci—much like orbital motion in celestial mechanics.</p>
         <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; overflow: hidden;">
             <img src="media/orbitHit.png" alt="撞击轨道" style="flex: 1; min-width: 0; height: 200px; object-fit: cover;">
             <img src="media/orbitAway.png" alt="飞离轨道" style="flex: 1; min-width: 0; height: 200px; object-fit: cover;">
@@ -334,13 +334,11 @@
 
 
         <h2>Deform</h2>
-        <p>我首先参考了以下视频教程，并以其中展示的代码为基础：</p>
+        <p>I first learned the following video tutorial and based my implementation on the code shown in it:</p>
         <iframe width="560" height="315" src="https://www.youtube.com/embed/-dsRIyzAcqg?si=mRkwRGPl3w9XyhLt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-        <h3>运行速度优化</h3>
-        <p>虽然物理模拟的目标是尽可能接近真实，但在实际实现中遇到了一些性能瓶颈。
-        起初我没有注意到地球模型mesh的面数已经超过上万。原本的代码在每次撞击时，都会遍历所有顶点来计算地表的凹陷效果。
-        这种算法在单次碰撞时尚可运行，但当场景中加入了超过 50 个陨石碎片后，碰撞次数急剧上升，导致性能急剧下降——最终甚至会造成 Unity 崩溃或闪退</p>
+        <h3>Performance optimization</h3>
+        <p>Although the goal of the physics simulation is to be as realistic as possible, in practice I ran into some performance issues. Initially, I did not notice that the Earth model's mesh had over ten thousand faces. The original code iterated through all vertices to calculate surface deformation for each impact. This approach worked for a single collision, but when the scene included more than 50 meteor fragments, the number of collisions increased sharply, causing a serious drop in performance—eventually even leading to Unity crashing or freezing.</p>
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
             <pre><code class="language-csharp">
@@ -374,7 +372,7 @@
             </code></pre>
         </div>
 
-        <p>所以我将其简化为仅计算第一次撞击</p>
+        <p>Therefore, I simplified it to calculate only the first-time collision.</p>
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
             <pre><code class="language-csharp">
@@ -458,7 +456,7 @@
             </code></pre>
         </div>
 
-        <p>并且使用三维空间的哈希算法来缩小顶点遍历范围，理论上来说它把空间分割成多个以deformRadius为边长的正方体。这样一来，在计算地表凹陷时，只需要检测撞击点所在及其周围相邻的，共计27个正方体中的顶点，并在衰减范围内执行变形计算即可。（不过我还在尝试弄懂这部分，我不太确定代码是否真的起作用了，以及这是否是最简单的方法）。意外了解到有许多MMO游戏在采用这种算法。</p>
+        <p>I also used a 3D spatial hashing algorithm to reduce the range of vertex traversal. In theory, it divides space into multiple cubes with a side length of deformRadius. This way, when calculating surface deformation, only the vertices within the cube containing the impact point and its 26 neighboring cubes—a total of 27 cubes—need to be checked, and the deformation is applied within the attenuation range. (I'm still trying to fully understand this part, so I'm not entirely sure if the code is actually working or if this is the simplest method.) I was surprised to learn that many MMO games use this kind of algorithm.</p>
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
             <pre><code class="language-csharp">
@@ -508,8 +506,8 @@
             </code></pre>
         </div>
 
-        <h3>crater形状</h3>
-        <p>原有代码里，针对crater的形状计算仅仅是线性衰减和多次叠加的钳制</p>
+        <h3>Crater's Shape</h3>
+        <p>In the original code, the crater shape was calculated using only linear attenuation and clamping through multiple overlapping applications.</p>
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
             <pre><code class="language-csharp">
@@ -532,7 +530,7 @@
             </code></pre>
         </div>
 
-        <p>实际上的坑洞会更像一个碗形，或者碟形，所以底部形状以及和周围地面的衔接需要更平滑</p>
+        <p>In reality, a crater is more like a bowl or a dish, so the shape of the bottom and its transition to the surrounding terrain need to be smoother.</p>
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
             <pre><code class="language-csharp">
@@ -549,27 +547,27 @@
         </div>
 
 
-        <h2>陨石碎裂</h2>
-        <p>这个部分到最后也没有解决，在此列出我的一些尝试和想法。</p>
+        <h2>Meteor Fragmentation</h2>
+        <p>This part was not resolved in the end, so I am listing here some of my attempts and ideas.</p>
 
-        <h3>破碎模型替换</h3>
-        <p>在之前的游戏制作过程中，我曾遇到过类似的问题：当一场战斗开始时，场景中的装饰石块需要在瞬间破碎并向外爆散。当时采用的做法是：在完整模型的基础上，预先制作一个已分裂的碎片模型，并在事件触发时将其替换。由于碎片模型的法线与原模型并不完全一致，替换后会出现明显的裂缝，因此我们通过播放预设的破碎动画来掩盖这种视觉不连续。这段动画并非基于实时物理计算，而是纯粹的视觉效果。<br>
-        因此，在当前的陨石撞击项目中，我希望沿用类似的替换逻辑：在碰撞发生后，将完整模型位置和速度数据传递给碎片模型，从而实现一种近似物理的破碎效果。</p>
+        <h3>Fragmented Model Replacement</h3>
+        <p>In a previous game development project, I encountered a similar problem: when a battle started, decorative rocks in the scene needed to shatter instantly and scatter outward. The approach we used was to pre-create a fragmented model based on the complete model and replace it when the event was triggered. Because the normals of the fragmented model did not perfectly match those of the original model, noticeable cracks appeared after the replacement. To mask this visual discontinuity, we played a preset shattering animation. This animation was not based on real-time physics—it was purely a visual effect.<br>
+        Therefore, in the current meteor impact project, I plan to use a similar replacement approach: after a collision occurs, the position and velocity data of the complete model are transferred to the fragmented model, achieving an approximate physics-based shattering effect.</p>
 
-        <p>然而，问题出在数据传递上。碎片模型共有一个 Parent Empty Object，但由于该对象本身不具有可渲染模型，因此无法附加 Rigidbody 组件。结果是，Parent 对象无法受到 Gravity Field 的引力作用，其子碎片也无法通过父对象获得与物理系统一致的速度或碰撞响应。</p>
-        <p>不过我仍然觉得这是最合理的解决方案，只是还需要进一步研究</p>
+        <p>However, the problem lies in data transfer. The fragmented model shares a single parent empty object, but since this object does not have a renderable model itself, a Rigidbody component cannot be attached to it. As a result, the parent object cannot be affected by the Gravity Field, and its child fragments cannot inherit velocity or collision responses consistent with the physics system through the parent.</p>
+        <p>Nevertheless, I still consider this the most reasonable solution; it just requires further investigation.</p>
 
-        <h3>破碎模型整体移动</h3>
-        <p>这是目前采用的方案，但仍存在一些限制。由于前文提到的 Parent Empty Object 问题，碎片无法依靠父对象整体移动。为此，我为每个碎片单独添加了 Rigidbody 和 Collider，使它们能够受到重力的作用。然而，这种方法也带来新的挑战：当碎片的速度方向与重力方向不一致时，它们很容易在空中提前分散，形成一片“迷你陨石带”。如果初速度过大，碎片甚至可能在地球引力作用下形成类似行星环的结构，就像土星的腰带一样。</p>
+        <h3>Movement of the fragmented model as a whole</h3>
+        <p>This is the solution currently in use, but it still has some limitations. Due to the previously mentioned parent empty object issue, the fragments cannot move as a whole relying on the parent. To address this, I added a Rigidbody and Collider to each fragment individually, allowing them to be affected by gravity. However, this approach introduces new challenges: when a fragment’s velocity direction does not align with gravity, it can disperse prematurely in midair, forming a “mini meteor belt.” If the initial velocity is too high, the fragments may even form a ring-like structure under Earth’s gravity, similar to Saturn’s rings.</p>
         
-        <h3>真正的实时碎裂</h3>
-        <p>一年前，我确实看到过类似的 Unity 插件演示，这可能也是一个可行的方向。不过仔细思考后，我发现这种方法依然需要生成大量子物体，并且将位置和速度数据进行传递，才能实现类似的效果。</p>
+        <h3>Real-time Fragmentation</h3>
+        <p>About a year ago, I did see a demonstration of a similar Unity plugin, which could be a viable approach. However, upon closer consideration, I realized that this method still requires generating a large number of child objects and transferring position and velocity data to achieve a similar effect.</p>
 
 
 
         <h2>Impact</h2>
-        <h3>结合scripts和Shader Graph</h3>
-        <p>由于涉及视觉效果，我一开始打算直接编写 shader 文件，但发现这样不仅要处理运行逻辑，还需要较深的图形学知识。因此，我选择使用 Shader Graph，这样可以在更短时间内实现效果，而且更加直观。问题随之而来：如何将 scripts 中的撞击点信息暴露给 Shader Graph。解决方法是在 scripts 中将数据传递给 material，并确保 Shader Graph 中的参数命名与 scripts 中完全一致，从而实现数据同步。</p>
+        <h3>Combining scripts with Shader Graph</h3>
+        <p>Since this involves visual effects, I initially planned to write a shader file directly. However, I realized that this approach would require handling runtime logic as well as fairly deep knowledge of graphics programming. Therefore, I chose to use Shader Graph, which allows the effect to be implemented more quickly and intuitively. The challenge then became how to expose the impact point information from the scripts to Shader Graph. The solution is to pass the data from the scripts to the material and ensure that the parameter names in Shader Graph exactly match those in the scripts, enabling proper data synchronization.</p>
 
         <div class="code-container">
             <button class="copy-btn" onclick="copyCode()">Copy</button>
@@ -650,8 +648,8 @@
         </div>
 
 
-        <h3>冲击波形状</h3>
-        <p>Shader Graph 可以直接获取物体空间信息，因此一旦拥有了 Impact 数据，效果的实现就非常顺利。通过时间乘以距离（time × distance），可以生成一个从撞击点不断扩大的圆形区域。基于这个圆形，再计算两个圆形的差值即可模拟冲击波的扩散效果。</p>
+        <h3>Shockwave Shape</h3>
+        <p>Shader Graph can directly access object-space information, so once the impact data is available, implementing the effect becomes straightforward. By multiplying time by distance (time × distance), a circular area expanding outward from the impact point can be generated. Based on this circle, calculating the difference between two circles allows simulating the propagation of the shockwave.</p>
         <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; overflow: hidden;">
             <img src="media/ImpactMask.png" alt="冲击波mask" style="flex: 1; min-width: 0; height: 500px; object-fit: cover;">
             <img src="media/ImpactWave.png" alt="冲击波" style="flex: 1; min-width: 0; height: 500px; object-fit: cover;">
@@ -778,16 +776,16 @@
                 }
             </code></pre>
         </div>
-        <p>然而，这种方法存在明显的问题。随着圆圈不断扩展，每个粒子特效只从一个点发射粒子，因此需要大量点才能保证视觉上圆圈的完整与连续。而随着圆圈周长增大，每一圈都必须增加更多的特效 prefab，并且各圈之间需要保持紧密排列，才能实现向外扩散的圆形效果。随着几圈同时存在，场景中的粒子数量迅速增加，导致性能下降，非常容易出现卡顿。</p>
+        <p>However, this method has obvious limitations. As the circle keeps expanding, each particle effect emits particles from only a single point, so a large number of points are required to maintain a visually complete and continuous circle. As the circle's circumference grows, more particle prefabs must be added for each ring, and the rings must be closely spaced to achieve the outward-expanding circular effect. With several rings existing simultaneously, the number of particles in the scene increases rapidly, causing performance drops and making stuttering very likely.</p>
 
         
-        <h3>材质切换</h3>
+        <h3>Material switching</h3>
         <div style="display: flex; gap: 10px; margin: 0; padding: 0; width: 100%; box-sizing: border-box; align-items: flex-start;">
-            <p style="flex: 0 0 30%; margin: 0; padding: 0;"><br>我将冲击波的形状作为一个mask，在碰撞发生前使用材质1，碰撞后mask出现图案切换为材质2。当然，这里的"材质"只是一个笼统的称呼，实际上每个材质属性都需要单独计算并输出，以实现更精确的视觉效果。</p>
+            <p style="flex: 0 0 30%; margin: 0; padding: 0;"><br>I used the shape of the shockwave as a mask: before the collision, Material 1 is applied, and after the collision, when the mask appears, it switches to Material 2. Of course, the term “material” here is a general reference; in practice, each material property needs to be calculated and output separately to achieve a more precise visual effect.</p>
             <img src="media/switchMaterial.png" alt="材质切换" style="flex: 1; min-width: 0; height: auto; object-fit: contain; display: block;">
         </div>
 
-        <p>关于岩浆材质制作视频教程</p>
+        <p>Video tutorial on creating lava materials</p>
         <iframe width="560" height="315" src="https://www.youtube.com/embed/pWceFO4_LiQ?si=KzY0Wql-jO1eKQry" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         
 
