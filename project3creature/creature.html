@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creature Document</title>
+
+    <style>
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    text-align: justify;
+    margin-bottom: 20px;
+  }
+</style>
+    </head>
+
+    <body>
+
+        <h1>Creature Document</h1>
+
+        <h2>Overview</h2>
+        <p>This project is an interactive visualization experiment based on ESP32 and TouchDesigner. It uses real-time atmospheric pressure data to drive a rainfall effect: when the pressure rises, it starts raining in the virtual environment; when the pressure drops, the rain stops.</p>
+
+
+        <h2>System Architecture</h2>
+        <p>The system is composed of three parts:
+            <ul>
+                <li>ESP32 + Sensors: The ESP32 collects local data and sends it to the Adafruit IO platform via WiFi.</li>
+                <li>Adafruit IO: Serving as a cloud-based data exchange platform, it handles data upload and subscription. My device and a classmate’s device send data to each other and subscribe to each other’s datasets, enabling real-time data sharing.</li>
+                <li>TouchDesigner: Receives serial data and visualizes different effects based on the values.</li>
+            </ul>
+
+            
+        </p>
+        <p>I worked on the part highlighted in green.</p>
+        <image src="image/structure.png" style="width:80%; height:auto;"></image>
+        
+
+        <h2>Temperature sensor</h2>
+        <p>Introduction and Code Reference for the Temperature Sensor:<a href="https://learn.adafruit.com/tmp36-temperature-sensor" target="_blank">Tmp36</a></p>
+        <image src="image/Tmp.jpg" style="width:80%; height:auto;"></image>
+
+        <h2>Visualization</h2>
+        <p>The core visual feature of the project is the ripple effect in TouchDesigner. The appearance and disappearance of the ripples are entirely controlled by real-time pressure data.</p>
+        <p>Reference for the ripple effect:<a href="https://www.youtube.com/watch?v=z1diD_nw8TU" target="_blank">Water ripple effect (TouchDesigner tutorial)</a></p>
+        <video src="image/_perform_ 2025-11-10 16-38-43.mp4" controls style="width:80%; height:auto;"></video>
+        
+
+
+        <h1></h1>
+        <h2></h2>
+        <h3></h3>
+        <p></p>
+        <image></image>
+        <video></video>
+
+    </body>
