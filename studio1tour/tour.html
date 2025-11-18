@@ -1,0 +1,545 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Shield, Zap, Coins, Cpu } from 'lucide-react';
+
+const AppleSlots = () => {
+  const [slots, setSlots] = useState(['equipment', 'mount', 'coin']);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [particles, setParticles] = useState([]);
+  const [matchedDimension, setMatchedDimension] = useState(null);
+  const [winCount, setWinCount] = useState({ equipment: 0, mount: 0, coin: 0 });
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [failCount, setFailCount] = useState(0);
+  const [totalSpins, setTotalSpins] = useState(0);
+  const audioContextRef = useRef(null);
+
+  useEffect(() => {
+    audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+  }, []);
+
+  const playSound = (type) => {
+    const ctx = audioContextRef.current;
+    if (!ctx) return;
+
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    switch(type) {
+      case 'equipment':
+        // 装备：强劲的金属碰撞声
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(200, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        break;
+      case 'mount':
+        // 坐骑：快速上升的呼啸声
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(300, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.4);
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        break;
+      case 'coin':
+        // 金币：清脆的叮当声
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+        break;
+      case 'spin':
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(300, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        break;
+      case 'win':
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 500 + i * 200;
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+          }, i * 100);
+        }
+        return;
+      case 'surprise':
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 400 + Math.random() * 600;
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+          }, i * 80);
+        }
+        return;
+    }
+
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 1);
+  };
+
+  const dimensions = [
+    { 
+      id: 'equipment', 
+      name: 'Equipment', 
+      subtitle: 'Gear & Armor',
+      icon: Shield, 
+      neon: '#FF9500',
+      particle: 'bg-orange-400'
+    },
+    { 
+      id: 'mount', 
+      name: 'Mount', 
+      subtitle: 'Ride & Speed',
+      icon: Zap, 
+      neon: '#007AFF',
+      particle: 'bg-blue-400'
+    },
+    { 
+      id: 'coin', 
+      name: 'Coin', 
+      subtitle: 'Gold & Wealth',
+      icon: Coins, 
+      neon: '#FFD700',
+      particle: 'bg-yellow-400'
+    }
+  ];
+
+  const generateParticles = (type, count = 60) => {
+    const newParticles = [];
+    const centerX = 50;
+    const centerY = 50;
+    
+    for (let i = 0; i < count; i++) {
+      let particle = {
+        id: Date.now() + Math.random(),
+        type,
+        life: 120
+      };
+
+      // 为不同类型创建不同的粒子效果
+      if (type === 'equipment') {
+        // 装备：爆炸式向外扩散
+        const angle = (Math.PI * 2 * i) / count;
+        particle.x = centerX;
+        particle.y = centerY;
+        particle.vx = Math.cos(angle) * (3 + Math.random() * 2);
+        particle.vy = Math.sin(angle) * (3 + Math.random() * 2);
+        particle.size = 3 + Math.random() * 2;
+        particle.shape = 'square';
+        particle.rotation = Math.random() * 360;
+      } else if (type === 'mount') {
+        // 坐骑：快速横向飞驰
+        particle.x = -10 + Math.random() * 10;
+        particle.y = 20 + Math.random() * 60;
+        particle.vx = 6 + Math.random() * 4;
+        particle.vy = (Math.random() - 0.5) * 1;
+        particle.size = 2 + Math.random() * 2;
+        particle.shape = 'trail';
+      } else if (type === 'coin') {
+        // 金币：从上方飘落
+        particle.x = centerX + (Math.random() - 0.5) * 40;
+        particle.y = -10;
+        particle.vx = (Math.random() - 0.5) * 2;
+        particle.vy = 2 + Math.random() * 2;
+        particle.size = 3 + Math.random() * 2;
+        particle.shape = 'circle';
+        particle.rotation = 0;
+        particle.rotationSpeed = (Math.random() - 0.5) * 20;
+      } else if (type === 'surprise') {
+        // 全部解锁：混合所有效果
+        const effectType = i % 3;
+        if (effectType === 0) {
+          const angle = (Math.PI * 2 * i) / count;
+          particle.x = centerX;
+          particle.y = centerY;
+          particle.vx = Math.cos(angle) * 4;
+          particle.vy = Math.sin(angle) * 4;
+          particle.size = 3 + Math.random() * 2;
+          particle.shape = 'square';
+          particle.rotation = Math.random() * 360;
+        } else if (effectType === 1) {
+          particle.x = Math.random() * 100;
+          particle.y = Math.random() * 100;
+          particle.vx = (Math.random() - 0.5) * 6;
+          particle.vy = (Math.random() - 0.5) * 6;
+          particle.size = 2 + Math.random() * 2;
+          particle.shape = 'trail';
+        } else {
+          particle.x = centerX + (Math.random() - 0.5) * 30;
+          particle.y = centerY + (Math.random() - 0.5) * 30;
+          particle.vx = (Math.random() - 0.5) * 3;
+          particle.vy = (Math.random() - 0.5) * 3;
+          particle.size = 3 + Math.random() * 2;
+          particle.shape = 'circle';
+          particle.rotation = 0;
+          particle.rotationSpeed = (Math.random() - 0.5) * 20;
+        }
+      }
+      
+      newParticles.push(particle);
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
+  useEffect(() => {
+    if (particles.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setParticles(prev => 
+        prev
+          .map(p => {
+            let newP = { ...p };
+            
+            // 根据粒子形状应用不同的物理效果
+            if (p.shape === 'square') {
+              // 装备粒子：旋转并减速
+              newP.x = p.x + p.vx;
+              newP.y = p.y + p.vy;
+              newP.vx = p.vx * 0.98;
+              newP.vy = p.vy * 0.98;
+              newP.rotation = (p.rotation || 0) + 10;
+            } else if (p.shape === 'trail') {
+              // 坐骑粒子：加速向右
+              newP.x = p.x + p.vx;
+              newP.y = p.y + p.vy;
+              newP.vx = p.vx * 1.05;
+            } else if (p.shape === 'circle') {
+              // 金币粒子：重力下落并旋转
+              newP.x = p.x + p.vx;
+              newP.y = p.y + p.vy;
+              newP.vy = p.vy + 0.15; // 重力加速度
+              newP.rotation = (p.rotation || 0) + (p.rotationSpeed || 0);
+            } else {
+              // 默认行为
+              newP.x = p.x + p.vx;
+              newP.y = p.y + p.vy;
+            }
+            
+            newP.life = p.life - 2;
+            return newP;
+          })
+          .filter(p => p.life > 0 && p.x >= -10 && p.x <= 110 && p.y >= -10 && p.y <= 110)
+      );
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [particles.length]);
+
+  const handleSpin = () => {
+    if (isSpinning) return;
+    
+    setIsSpinning(true);
+    setMatchedDimension(null);
+    setTotalSpins(prev => prev + 1);
+    
+    const dimensionTypes = ['equipment', 'mount', 'coin'];
+    let spinCount = 0;
+    const maxSpins = 20;
+    
+    const spinInterval = setInterval(() => {
+      setSlots([
+        dimensionTypes[Math.floor(Math.random() * 3)],
+        dimensionTypes[Math.floor(Math.random() * 3)],
+        dimensionTypes[Math.floor(Math.random() * 3)]
+      ]);
+      
+      spinCount++;
+      
+      if (spinCount >= maxSpins) {
+        clearInterval(spinInterval);
+        
+        let finalSlots;
+        
+        if (failCount >= 4) {
+          const minWins = Math.min(winCount.equipment, winCount.mount, winCount.coin);
+          const availableDims = dimensionTypes.filter(dim => winCount[dim] === minWins);
+          const guaranteedDim = availableDims[Math.floor(Math.random() * availableDims.length)];
+          finalSlots = [guaranteedDim, guaranteedDim, guaranteedDim];
+          setFailCount(0);
+        } else {
+          const shouldWin = Math.random() < 0.3;
+          
+          if (shouldWin) {
+            const randomDim = dimensionTypes[Math.floor(Math.random() * 3)];
+            finalSlots = [randomDim, randomDim, randomDim];
+            setFailCount(0);
+          } else {
+            finalSlots = [
+              dimensionTypes[Math.floor(Math.random() * 3)],
+              dimensionTypes[Math.floor(Math.random() * 3)],
+              dimensionTypes[Math.floor(Math.random() * 3)]
+            ];
+            if (finalSlots[0] === finalSlots[1] && finalSlots[1] === finalSlots[2]) {
+              finalSlots[2] = dimensionTypes.find(d => d !== finalSlots[0]);
+            }
+          }
+        }
+        
+        setSlots(finalSlots);
+        
+        if (finalSlots[0] === finalSlots[1] && finalSlots[1] === finalSlots[2]) {
+          const matched = finalSlots[0];
+          setMatchedDimension(matched);
+          setFailCount(0);
+          
+          setTimeout(() => {
+            playSound('win');
+            playSound(matched);
+            generateParticles(matched, 80);
+            
+            setWinCount(prev => ({
+              ...prev,
+              [matched]: prev[matched] + 1
+            }));
+            
+            const newWinCount = { ...winCount, [matched]: winCount[matched] + 1 };
+            if (newWinCount.equipment > 0 && newWinCount.mount > 0 && newWinCount.coin > 0) {
+              setTimeout(() => {
+                setShowCelebration(true);
+                playSound('surprise');
+                generateParticles('surprise', 100);
+                setTimeout(() => setShowCelebration(false), 3000);
+              }, 1000);
+            }
+          }, 500);
+        } else {
+          setFailCount(prev => prev + 1);
+        }
+        
+        setIsSpinning(false);
+      }
+    }, 100);
+  };
+
+  return (
+    <div className="relative w-full h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-hidden">
+      {/* 背景 */}
+      <div className="absolute inset-0">
+        <div className={`absolute inset-0 transition-all duration-1000 ${
+          matchedDimension === 'equipment' 
+            ? 'bg-gradient-to-br from-orange-50 via-white to-yellow-50' 
+            : matchedDimension === 'mount'
+            ? 'bg-gradient-to-br from-blue-50 via-white to-cyan-50'
+            : matchedDimension === 'coin'
+            ? 'bg-gradient-to-br from-yellow-50 via-white to-amber-50'
+            : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
+        }`}></div>
+      </div>
+
+      {/* 粒子 */}
+      <div className="absolute inset-0 pointer-events-none">
+        {particles.map(p => {
+          const dim = dimensions.find(d => d.id === p.type) || dimensions[0];
+          
+          // 根据形状渲染不同的粒子
+          if (p.shape === 'square') {
+            // 装备：旋转的方块
+            return (
+              <div
+                key={p.id}
+                className={`absolute ${p.type === 'surprise' ? 'bg-gradient-to-br from-orange-400 via-blue-400 to-yellow-400' : dim.particle}`}
+                style={{
+                  left: `${p.x}%`,
+                  top: `${p.y}%`,
+                  width: `${p.size * 2}px`,
+                  height: `${p.size * 2}px`,
+                  opacity: (p.life / 120) * 0.7,
+                  transform: `scale(${p.life / 120}) rotate(${p.rotation}deg)`,
+                  filter: 'blur(0.3px)',
+                  boxShadow: `0 2px 10px ${dim.neon}60`
+                }}
+              ></div>
+            );
+          } else if (p.shape === 'trail') {
+            // 坐骑：横向拖尾
+            return (
+              <div
+                key={p.id}
+                className={`absolute rounded-full ${p.type === 'surprise' ? 'bg-gradient-to-r from-orange-400 via-blue-400 to-yellow-400' : dim.particle}`}
+                style={{
+                  left: `${p.x}%`,
+                  top: `${p.y}%`,
+                  width: `${p.size * 8}px`,
+                  height: `${p.size * 1.5}px`,
+                  opacity: (p.life / 120) * 0.6,
+                  transform: `scale(${p.life / 120})`,
+                  filter: 'blur(0.8px)',
+                  boxShadow: `0 0 15px ${dim.neon}80`
+                }}
+              ></div>
+            );
+          } else {
+            // 金币：旋转的圆形
+            return (
+              <div
+                key={p.id}
+                className={`absolute rounded-full ${p.type === 'surprise' ? 'bg-gradient-to-br from-orange-400 via-blue-400 to-yellow-400' : dim.particle}`}
+                style={{
+                  left: `${p.x}%`,
+                  top: `${p.y}%`,
+                  width: `${p.size * 2}px`,
+                  height: `${p.size * 2}px`,
+                  opacity: (p.life / 120) * 0.8,
+                  transform: `scale(${p.life / 120}) rotateY(${p.rotation}deg)`,
+                  filter: 'blur(0.3px)',
+                  boxShadow: `0 2px 12px ${dim.neon}70`
+                }}
+              ></div>
+            );
+          }
+        })}
+      </div>
+
+      {/* 庆祝 */}
+      {showCelebration && (
+        <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div className="text-5xl font-semibold tracking-tight animate-pulse bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+            All Dimensions Unlocked
+          </div>
+        </div>
+      )}
+
+      {/* 主内容 */}
+      <div className="relative z-10 flex items-center justify-center h-full px-8 gap-12">
+        {/* 老虎机 */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-gray-100">
+          <div className="text-gray-400 text-center mb-8 font-medium text-sm">
+            Neural Slots
+          </div>
+          
+          <div className="flex gap-6">
+            {slots.map((slotType, index) => {
+              const dim = dimensions.find(d => d.id === slotType);
+              const Icon = dim.icon;
+              
+              return (
+                <div
+                  key={index}
+                  className="bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center gap-3"
+                  style={{
+                    width: '140px',
+                    height: '180px',
+                    border: `2px solid ${dim.neon}20`
+                  }}
+                >
+                  <Icon size={56} style={{ color: dim.neon, strokeWidth: 1.5 }} />
+                  <div className="text-gray-900 font-semibold text-lg">{dim.name}</div>
+                  <div className="text-xs text-gray-400 font-medium">{dim.subtitle}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 控制面板 */}
+        <div className="flex flex-col gap-6" style={{ width: '420px' }}>
+          {/* 状态 */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-gray-100">
+            <div className="text-gray-400 text-center mb-6 font-medium text-sm">
+              Dimension Status
+            </div>
+            <div className="space-y-3">
+              {dimensions.map(dim => {
+                const Icon = dim.icon;
+                const count = winCount[dim.id];
+                
+                return (
+                  <div key={dim.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                        background: count > 0 ? `${dim.neon}15` : '#F5F5F7'
+                      }}>
+                        <Icon size={20} style={{ 
+                          color: count > 0 ? dim.neon : '#C7C7CC',
+                          strokeWidth: 1.5
+                        }} />
+                      </div>
+                      <span className="text-gray-900 font-medium text-sm">{dim.name}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="px-3 py-1 text-xs font-semibold rounded-full" style={{
+                        background: count > 0 ? dim.neon : '#F5F5F7',
+                        color: count > 0 ? '#fff' : '#C7C7CC'
+                      }}>
+                        {count > 0 ? 'Active' : 'Locked'}
+                      </div>
+                      <span className="text-gray-400 text-sm font-medium w-8 text-right">×{count}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {winCount.equipment > 0 && winCount.mount > 0 && winCount.coin > 0 && (
+              <div className="mt-6 pt-4 border-t border-gray-200 text-center font-semibold text-sm bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                ★ All Systems Operational ★
+              </div>
+            )}
+            
+            <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between text-xs font-medium">
+              <span className="text-gray-500">Total: <span className="text-gray-900">{totalSpins}</span></span>
+              {failCount > 0 && (
+                <span className="text-gray-500">Streak: <span className="text-orange-500">{failCount}/4</span></span>
+              )}
+            </div>
+          </div>
+
+          {/* 按钮区 */}
+          <div className="space-y-4">
+            {matchedDimension && (
+              <div className="text-center py-4 bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg font-semibold text-lg" style={{
+                border: `2px solid ${dimensions.find(d => d.id === matchedDimension)?.neon}40`,
+                color: dimensions.find(d => d.id === matchedDimension)?.neon
+              }}>
+                {dimensions.find(d => d.id === matchedDimension)?.name} Acquired
+              </div>
+            )}
+            
+            {failCount >= 3 && !matchedDimension && (
+              <div className="text-center py-4 bg-orange-50 rounded-2xl shadow-lg font-semibold text-sm text-orange-600 border-2 border-orange-200">
+                Luck Boost Active
+              </div>
+            )}
+
+            <button
+              onClick={handleSpin}
+              disabled={isSpinning}
+              className="w-full rounded-2xl p-6 transition-all duration-300 flex items-center justify-center gap-3"
+              style={{
+                background: isSpinning 
+                  ? 'linear-gradient(135deg, #E5E5E7, #D1D1D6)' 
+                  : 'linear-gradient(135deg, #007AFF, #5856D6)',
+                color: '#fff',
+                boxShadow: isSpinning ? 'none' : '0 8px 24px rgba(0, 122, 255, 0.3)',
+                cursor: isSpinning ? 'not-allowed' : 'pointer'
+              }}
+            >
+              <Cpu size={24} className={isSpinning ? 'animate-spin' : ''} style={{ strokeWidth: 1.5 }} />
+              <span className="font-semibold text-lg">
+                {isSpinning ? 'Processing...' : 'Start'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AppleSlots;
