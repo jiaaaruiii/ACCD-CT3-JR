@@ -7,9 +7,22 @@
     <title>textgen</title>
   </head>
   <body>
-    <button id="fetchTEXT">Fetch some text</button>
-    <input type="text" id="inputText"/>
-    <button id ="generateTEXT">Generate text</button>
+    <header>
+      <div>Step 1:
+        <button id="fetchTEXT">Fetch some text</button>
+
+        <input type="radio" id="ngramSelection" name="unitType">
+        <label for="ngramSelection">N-grams</label>
+        <input type="radio" id="wordSelection" name="unitType" checked> 
+        <label for="wordSelection">Words</label>
+      </div>
+
+      <div>Step 2:
+        <input type="text" id="inputText" disabled/>
+        <button id ="generateTEXT" disabled>Generate text</button>
+      </div>
+    </header>
+
     <p id ="outputText"></p >
     
     <div id="app"></div>
