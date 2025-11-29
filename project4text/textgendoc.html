@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>textgendoc</title>
+    <style>
+      /* 0. 动态融球背景动画 Keyframes */
+      @keyframes moveBlobs {
+        0% { transform: scale(1.05) translate(0px, 0px); }
+        33% { transform: scale(1.15) translate(20px, -30px); } 
+        66% { transform: scale(0.95) translate(-10px, 40px); }
+        100% { transform: scale(1.05) translate(0px, 0px); }
+      }
+
+      @keyframes rotateBlobs {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+
+      /* 1. 全局和字体设置 */
+      :root {
+        --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        --color-primary: #007aff; /* 保持苹果标志性的蓝色 */
+        --color-text: #1d1d1f; /* 高对比度文本 */
+        
+        /* 融球背景的颜色 - 全新的蓝色主题 */
+        --blob-color-1: rgba(100, 180, 255, 0.5); /* 标准浅蓝色 */
+        --blob-color-2: rgba(150, 200, 255, 0.5); /* 天蓝色调 */
+        --blob-color-3: rgba(180, 230, 255, 0.5); /* 极浅的青色调 */
+        --blob-color-4: rgba(150, 150, 255, 0.5); /* 略带紫色的蓝色调 */
+        --blob-color-5: rgba(120, 160, 255, 0.5); /* 中等蓝色调 */
+
+
+        --color-code-background: #ffffff9b; /* 极浅的代码块背景 */
+        --color-code-border: #e0e0e3;
+        --color-dark-section-bg: #2a2a2e; /* 柔和的深灰色 */
+        
+        /* 毛玻璃效果的核心值 - 提高透明度，降低饱和度 */
+        --glass-blur: 25px; 
+        --glass-saturation: 120%; /* 降低饱和度，更纯净 */
+        --glass-bg-color: rgba(255, 255, 255, 0.573); /* 更高透明度，实现融合 */
+        --shadow-subtle: 0 1px 5px rgba(233, 233, 233, 0.08); 
+      }
+
+      html, body {
+          height: 100%;
+      }
+      
+      body {
+        font-family: var(--font-family-base);
+        line-height: 1.7; 
+        color: var(--color-text);
+        
+        background-color: #f7f8fa; /* 关键：更接近纯白的背景色 */
+        position: relative; 
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* 新增的外部包裹器，用于裁剪 */
+      .blob-outer {
+          position: fixed; 
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden; /* 裁剪发生在这里 */
+          z-index: -2;
+      }
+
+      /* 融球包裹器 (内部)，用于容纳放大的内容 */
+      .blob-wrapper {
+          position: absolute;
+          /* 放大内部容器以防止模糊边界被裁剪 */
+          width: 150%; 
+          height: 150%;
+          top: -25%; 
+          left: -25%;
+          
+          /* 旋转动画仍在内部容器上 */
+          animation: rotateBlobs 120s linear infinite; 
+          /* 移除这里的 overflow: hidden */
+      }
+
+
+      /* 融球元素样式 */
+      .blob {
+          position: absolute;
+          border-radius: 50%; 
+          filter: blur(120px); 
+          opacity: 0.7; 
+          z-index: -1; 
+          transform: scale(1.05); 
+          transition: transform 0.5s ease; 
+      }
+
+      .blob:nth-child(1) {
+          width: 350px; height: 350px;
+          background-color: var(--blob-color-1);
+          top: 10%; left: 10%;
+          animation: moveBlobs 30s infinite alternate ease-in-out; 
+      }
+
+      .blob:nth-child(2) {
+          width: 450px; height: 450px; 
+          background-color: var(--blob-color-2);
+          bottom: 15%; right: 5%;
+          animation: moveBlobs 35s infinite alternate-reverse ease-in-out; 
+      }
+
+      .blob:nth-child(3) {
+          width: 400px; height: 400px; 
+          background-color: var(--blob-color-3);
+          top: 20%; right: 20%;
+          animation: moveBlobs 32s infinite alternate ease-in-out; 
+      }
+
+      .blob:nth-child(4) {
+          width: 300px; height: 300px; 
+          background-color: var(--blob-color-4);
+          bottom: 5%; left: 25%;
+          animation: moveBlobs 28s infinite alternate-reverse ease-in-out; 
+      }
+
+      .blob:nth-child(5) {
+          width: 280px; height: 280px;
+          background-color: var(--blob-color-5);
+          top: 50%; left: 40%;
+          animation: moveBlobs 33s infinite alternate ease-in-out;
+      }
+
+
+      /* 主要内容容器 */
+      .container {
+        max-width: 800px;
+        margin: 60px auto; 
+        padding: 0 20px; 
+        width: 100%; 
+        z-index: 1; 
+        position: relative; 
+      }
+      
+      /* 2. 区块分节样式：毛玻璃卡片 */
+      .section-card {
+          /* 实现毛玻璃效果 */
+          background-color: var(--glass-bg-color); 
+          -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)); 
+          backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+          
+          /* 结构和外观 */
+          padding: 30px 40px; 
+          border-radius: 18px; 
+          border: 1px solid rgba(255, 255, 255, 0.3); 
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
+          margin-bottom: 30px; 
+          overflow: hidden; 
+      }
+
+      /* 3. 排版：突出层次 */
+      h1 {
+        text-align: center;
+        font-size: 3.2em;
+        font-weight: 700; 
+        letter-spacing: -0.03em; 
+        color: var(--color-text);
+        margin-bottom: 40px; 
+      }
+
+      h2 {
+        font-size: 2em;
+        font-weight: 600; 
+        color: var(--color-text);
+        margin-top: 0; 
+        margin-bottom: 18px;
+        padding-top: 10px;
+        letter-spacing: -0.01em;
+      }
+
+      p {
+        font-size: 1.08em;
+        color: var(--color-text);
+        margin-bottom: 25px;
+      }
+
+      /* 4. 交互元素：链接 */
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        transition: opacity 0.2s ease-in-out;
+        font-weight: 500;
+      }
+
+      a:hover {
+        opacity: 0.75;
+        text-decoration: underline;
+      }
+
+      /* 5. 代码块：突出、柔和 */
+      pre {
+        background-color: var(--color-code-background);
+        padding: 22px;
+        border-radius: 12px; 
+        border: 1px solid var(--color-code-border);
+        box-shadow: var(--shadow-subtle);
+        overflow-x: auto;
+        font-size: 0.9em;
+        margin: 30px 0;
+        line-height: 1.5;
+      }
+
+      code {
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      }
+      
+      pre code {
+          background-color: transparent;
+          padding: 0;
+          color: var(--color-text);
+      }
+
+      /* === 浅色背景代码高亮样式 (基于 GitHub Light 优化) === */
+      
+      /* 注释 */
+      .token.comment,
+      .token.prolog,
+      .token.doctype,
+      .token.cdata {
+        color: #ababab; 
+      }
+      
+      /* 字符串和正则表达式 */
+      .token.string,
+      .token.attr-value,
+      .token.regex,
+      .token.variable {
+        color: #565656; 
+      }
+      
+      /* 关键字，如 function, const, if, for, new */
+      .token.keyword,
+      .token.tag {
+        color: #907293; 
+      }
+      
+      /* 操作符和标点符号 */
+      .token.operator,
+      .token.punctuation {
+        color: #24292e; 
+      }
+      
+      /* 数字和布尔值 */
+      .token.number,
+      .token.boolean {
+        color: #9264bc; 
+      }
+      
+      /* 函数名 */
+      .token.function,
+      .token.selector,
+      .token.attr-name {
+        color: #145ed3; 
+      }
+      
+      /* 类名、属性名 */
+      .token.class-name,
+      .token.property,
+      .token.constant {
+        color: #2d98ce; 
+      }
+      /* === 代码高亮优化结束 === */
+
+      /* 6. 图片容器：深色背景，Flexbox 竖向排列 */
+      .image-group {
+        display: flex;
+        flex-direction: column; 
+        gap: 20px; 
+        background-color: var(--color-dark-section-bg);
+        padding: 30px;
+        border-radius: 15px;
+        margin: 30px 0; 
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+      }
+
+      /* 图片样式：缩小、居中、统一风格 */
+      image {
+        display: block;
+        max-width: 85%; 
+        height: auto;
+        margin: 0 auto; 
+        border-radius: 10px; 
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); 
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      /* 可选的微交互 */
+      image:hover {
+          transform: scale(1.02);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="blob-outer">
+      <div class="blob-wrapper">
+          <div class="blob"></div>
+          <div class="blob"></div>
+          <div class="blob"></div>
+          <div class="blob"></div>
+          <div class="blob"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>TextGen Doc</h1>
+
+      <div class="section-card">
+        <h2>Intro</h2>
+        <p>This project fetches data from two different APIs, merges the results, trains a simple Markov chain model on the combined text, and then generates new text from it.</p>
+      </div>
+
+      <div class="section-card">
+        <h2>Data Sources</h2>
+        <p>Using the API provided by The New York Times: </p>
+        <a href="https://developer.nytimes.com/">https://developer.nytimes.com/</a>
+        <p>I selected two different sections—World News and Arts—to combine. Both provide a results list, and this project mainly uses the abstract field from each item as the training text.</p>
+      </div>
+
+      <div class="section-card">
+        <h2>Implementation of Style Fusion</h2>
+
+        <pre><code class="language-javascript">function fetchSourceText(){
+    const fetchWorldPromise = fetch(sourceURL);
+    const fetchArtsPromise = fetch(sourceURL2);
+
+    // Promise.all ensures both requests complete before processing
+    Promise.all([fetchWorldPromise, fetchArtsPromise])
+        .then(responses => {
+            return Promise.all(responses.map(res => res.json()));
+        })
+        .then(dataArray => {
+            const [worldData, artsData] = dataArray;
+
+            // Train model with World News (Source 1)
+            worldData.results.forEach(news => {
+                if (news.abstract) processText(news.abstract);
+            });
+            
+            // Train model with Arts News (Source 2) - fusion happens here
+            artsData.results.forEach(news => {
+                if (news.abstract) processText(news.abstract);
+            });
+
+            inputText.disabled = false;
+            generateButton.disabled = false;
+            console.log("✅ Model successfully fused World and Arts patterns.");
+        })
+        .catch(error => {
+            console.error('Error fetching source texts:', error);
+        });
+}</code></pre>
+        <p>In fetchSourceText(), two fetch requests are initiated simultaneously using Promise.all:</p>
+
+        <pre><code class="language-javascript">
+Promise.all([fetch(sourceURL), fetch(sourceURL2)])
+</code></pre>
+        <p>Once both responses are returned, their JSON data is processed together. This ensures that content from both sources is used simultaneously for text generation.</p>
+      </div>
+
+      <div class="section-card">
+        <h2>Aesthetics and Limitations</h2>
+        <p>This text generator can sometimes produce absurd yet meaningful sentences:</p>
+        
+        <div class="image-group">
+          <image src="image/屏幕截图 2025-11-28 150648.png"></image>
+          <image src="image/屏幕截图 2025-11-28 150939.png"></image>
+          <image src="image/屏幕截图 2025-11-28 151050.png"></image>
+        </div>
+        
+        <p>However, most of the time it merely produces random combinations, often with imperfect grammar:</p>
+
+        <div class="image-group">
+          <image src="image/1.png"></image>
+          <image src="image/2.png"></image>
+          <image src="image/3.png"></image>
+        </div>
+
+        <p>It made me realize that, on one hand, text generation requires a large amount of training data, and on the other hand, these models do not truly possess human-like intelligence.</p>
+      </div>
+
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    
+  </body>
+</html>

@@ -16,6 +16,7 @@ function fetchSourceText(){
   fetch(sourceURL)
   .then(response => response.json())
   .then(poems => {
+    console.log(poems);
     console.log(ngramsOverWords)
     poems.forEach(poem =>{
       poem.lines.forEach(line => {
