@@ -5,300 +5,135 @@
     <meta name="viewport" content="width=device-width" />
     <title>textgendoc</title>
     <style>
-      /* 0. 动态融球背景动画 Keyframes */
-      @keyframes moveBlobs {
-        0% { transform: scale(1.05) translate(0px, 0px); }
-        33% { transform: scale(1.15) translate(20px, -30px); } 
-        66% { transform: scale(0.95) translate(-10px, 40px); }
-        100% { transform: scale(1.05) translate(0px, 0px); }
-      }
+/* 1. 变量与全局设置：死板且严肃的官僚公文感 */
+:root {
+  --paper-bg: #d1d1d1; /* 复印纸灰 */
+  --ink-color: #1a1a1a;
+  --font-mono: 'Courier Prime', 'Courier', monospace;
+}
 
-      @keyframes rotateBlobs {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-      }
+body {
+  /* 网页大背景：增加工业办公桌质感 */
+  background-color: #1e2021; 
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 80%),
+    url("https://www.transparenttextures.com/patterns/dark-leather.png"); /* 增加纹理感 */
+  font-family: var(--font-mono);
+  color: var(--ink-color);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  min-height: 100vh;
+}
 
-      /* 1. 全局和字体设置 */
-      :root {
-        --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        --color-primary: #007aff; /* 保持苹果标志性的蓝色 */
-        --color-text: #1d1d1f; /* 高对比度文本 */
-        
-        /* 融球背景的颜色 - 全新的蓝色主题 */
-        --blob-color-1: rgba(100, 180, 255, 0.5); /* 标准浅蓝色 */
-        --blob-color-2: rgba(150, 200, 255, 0.5); /* 天蓝色调 */
-        --blob-color-3: rgba(180, 230, 255, 0.5); /* 极浅的青色调 */
-        --blob-color-4: rgba(150, 150, 255, 0.5); /* 略带紫色的蓝色调 */
-        --blob-color-5: rgba(120, 160, 255, 0.5); /* 中等蓝色调 */
+.blob-outer { display: none; } /* 彻底关闭融球背景 */
 
+/* 2. 容器：压在桌上的机密卷宗 */
+.container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 60px;
+  background-color: var(--paper-bg);
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 25px 25px;
+  /* 沉重的投影，模拟纸张厚度 */
+  box-shadow: 25px 25px 60px rgba(0,0,0,0.5); 
+  border: 1px solid #999;
+  position: relative;
+  z-index: 1;
+}
 
-        --color-code-background: #ffffff9b; /* 极浅的代码块背景 */
-        --color-code-border: #e0e0e3;
-        --color-dark-section-bg: #2a2a2e; /* 柔和的深灰色 */
-        
-        /* 毛玻璃效果的核心值 - 提高透明度，降低饱和度 */
-        --glass-blur: 25px; 
-        --glass-saturation: 120%; /* 降低饱和度，更纯净 */
-        --glass-bg-color: rgba(255, 255, 255, 0.573); /* 更高透明度，实现融合 */
-        --shadow-subtle: 0 1px 5px rgba(233, 233, 233, 0.08); 
-      }
+/* 3. 标题：黑底白字的公函头 */
+h1 {
+  text-align: center;
+  font-size: 3em;
+  text-transform: uppercase;
+  border: 5px double var(--ink-color);
+  padding: 15px;
+  background: #000;
+  color: #fff;
+  margin-bottom: 50px;
+}
 
-      html, body {
-          height: 100%;
-      }
-      
-      body {
-        font-family: var(--font-family-base);
-        line-height: 1.7; 
-        color: var(--color-text);
-        
-        background-color: #f7f8fa; /* 关键：更接近纯白的背景色 */
-        position: relative; 
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-      }
-      
-      /* 新增的外部包裹器，用于裁剪 */
-      .blob-outer {
-          position: fixed; 
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          overflow: hidden; /* 裁剪发生在这里 */
-          z-index: -2;
-      }
+h2 {
+  font-size: 1.5em;
+  border-bottom: 2px solid var(--ink-color);
+  display: inline-block;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
 
-      /* 融球包裹器 (内部)，用于容纳放大的内容 */
-      .blob-wrapper {
-          position: absolute;
-          /* 放大内部容器以防止模糊边界被裁剪 */
-          width: 150%; 
-          height: 150%;
-          top: -25%; 
-          left: -25%;
-          
-          /* 旋转动画仍在内部容器上 */
-          animation: rotateBlobs 120s linear infinite; 
-          /* 移除这里的 overflow: hidden */
-      }
+p {
+  font-size: 1.1em;
+  margin-bottom: 20px;
+}
 
+/* 4. 视频：保持原本颜色，黑色监视框 */
+.evidence-container {
+  border: 8px solid #000;
+  margin-bottom: 40px;
+  background: #000;
+  line-height: 0; 
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
 
-      /* 融球元素样式 */
-      .blob {
-          position: absolute;
-          border-radius: 50%; 
-          filter: blur(120px); 
-          opacity: 0.7; 
-          z-index: -1; 
-          transform: scale(1.05); 
-          transition: transform 0.5s ease; 
-      }
+video {
+  width: 100%;
+  filter: none !important; /* 强制原色 */
+  opacity: 1 !important;
+}
 
-      .blob:nth-child(1) {
-          width: 350px; height: 350px;
-          background-color: var(--blob-color-1);
-          top: 10%; left: 10%;
-          animation: moveBlobs 30s infinite alternate ease-in-out; 
-      }
+/* 5. 代码块：保持这种打印纸感 */
+pre {
+  background-color: #e8e8e8;
+  border: 1px dashed #666;
+  border-left: 15px solid #ccc;
+  padding: 20px;
+  font-size: 0.9em;
+  overflow-x: auto;
+  color: #333;
+}
 
-      .blob:nth-child(2) {
-          width: 450px; height: 450px; 
-          background-color: var(--blob-color-2);
-          bottom: 15%; right: 5%;
-          animation: moveBlobs 35s infinite alternate-reverse ease-in-out; 
-      }
+/* 6. 图片组：竖向排列，适配深灰色图片的深色背景 */
+.image-group {
+  display: flex;
+  flex-direction: column; /* 竖向排列 */
+  gap: 30px; 
+  background-color: #1a1a1a; /* 深黑色背景，适配深灰色图片 */
+  padding: 40px;
+  border-radius: 4px;
+  margin: 30px 0;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6); /* 增加深度感 */
+  border: 1px solid #333;
+}
 
-      .blob:nth-child(3) {
-          width: 400px; height: 400px; 
-          background-color: var(--blob-color-3);
-          top: 20%; right: 20%;
-          animation: moveBlobs 32s infinite alternate ease-in-out; 
-      }
+/* 彻底去掉图片边框和滤镜 */
+img, image {
+  display: block;
+  max-width: 95% !important;
+  height: auto;
+  margin: 0 auto;
+  filter: none !important; /* 保持原色 */
+  border: none !important; /* 去掉白边 */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
 
-      .blob:nth-child(4) {
-          width: 300px; height: 300px; 
-          background-color: var(--blob-color-4);
-          bottom: 5%; left: 25%;
-          animation: moveBlobs 28s infinite alternate-reverse ease-in-out; 
-      }
-
-      .blob:nth-child(5) {
-          width: 280px; height: 280px;
-          background-color: var(--blob-color-5);
-          top: 50%; left: 40%;
-          animation: moveBlobs 33s infinite alternate ease-in-out;
-      }
-
-
-      /* 主要内容容器 */
-      .container {
-        max-width: 800px;
-        margin: 60px auto; 
-        padding: 0 20px; 
-        width: 100%; 
-        z-index: 1; 
-        position: relative; 
-      }
-      
-      /* 2. 区块分节样式：毛玻璃卡片 */
-      .section-card {
-          /* 实现毛玻璃效果 */
-          background-color: var(--glass-bg-color); 
-          -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)); 
-          backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-          
-          /* 结构和外观 */
-          padding: 30px 40px; 
-          border-radius: 18px; 
-          border: 1px solid rgba(255, 255, 255, 0.3); 
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
-          margin-bottom: 30px; 
-          overflow: hidden; 
-      }
-
-      /* 3. 排版：突出层次 */
-      h1 {
-        text-align: center;
-        font-size: 3.2em;
-        font-weight: 700; 
-        letter-spacing: -0.03em; 
-        color: var(--color-text);
-        margin-bottom: 40px; 
-      }
-
-      h2 {
-        font-size: 2em;
-        font-weight: 600; 
-        color: var(--color-text);
-        margin-top: 0; 
-        margin-bottom: 18px;
-        padding-top: 10px;
-        letter-spacing: -0.01em;
-      }
-
-      p {
-        font-size: 1.08em;
-        color: var(--color-text);
-        margin-bottom: 25px;
-      }
-
-      /* 4. 交互元素：链接 */
-      a {
-        color: var(--color-primary);
-        text-decoration: none;
-        transition: opacity 0.2s ease-in-out;
-        font-weight: 500;
-      }
-
-      a:hover {
-        opacity: 0.75;
-        text-decoration: underline;
-      }
-
-      /* 5. 代码块：突出、柔和 */
-      pre {
-        background-color: var(--color-code-background);
-        padding: 22px;
-        border-radius: 12px; 
-        border: 1px solid var(--color-code-border);
-        box-shadow: var(--shadow-subtle);
-        overflow-x: auto;
-        font-size: 0.9em;
-        margin: 30px 0;
-        line-height: 1.5;
-      }
-
-      code {
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-      }
-      
-      pre code {
-          background-color: transparent;
-          padding: 0;
-          color: var(--color-text);
-      }
-
-      /* === 浅色背景代码高亮样式 (基于 GitHub Light 优化) === */
-      
-      /* 注释 */
-      .token.comment,
-      .token.prolog,
-      .token.doctype,
-      .token.cdata {
-        color: #ababab; 
-      }
-      
-      /* 字符串和正则表达式 */
-      .token.string,
-      .token.attr-value,
-      .token.regex,
-      .token.variable {
-        color: #565656; 
-      }
-      
-      /* 关键字，如 function, const, if, for, new */
-      .token.keyword,
-      .token.tag {
-        color: #907293; 
-      }
-      
-      /* 操作符和标点符号 */
-      .token.operator,
-      .token.punctuation {
-        color: #24292e; 
-      }
-      
-      /* 数字和布尔值 */
-      .token.number,
-      .token.boolean {
-        color: #9264bc; 
-      }
-      
-      /* 函数名 */
-      .token.function,
-      .token.selector,
-      .token.attr-name {
-        color: #145ed3; 
-      }
-      
-      /* 类名、属性名 */
-      .token.class-name,
-      .token.property,
-      .token.constant {
-        color: #2d98ce; 
-      }
-      /* === 代码高亮优化结束 === */
-
-      /* 6. 图片容器：深色背景，Flexbox 竖向排列 */
-      .image-group {
-        display: flex;
-        flex-direction: column; 
-        gap: 20px; 
-        background-color: var(--color-dark-section-bg);
-        padding: 30px;
-        border-radius: 15px;
-        margin: 30px 0; 
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
-      }
-
-      /* 图片样式：缩小、居中、统一风格 */
-      image {
-        display: block;
-        max-width: 85%; 
-        height: auto;
-        margin: 0 auto; 
-        border-radius: 10px; 
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); 
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      /* 可选的微交互 */
-      image:hover {
-          transform: scale(1.02);
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-      }
+/* 7. 水印：保留 BOTTOM SECRET 的讽刺感 */
+.container::after {
+  content: "BOTTOM SECRET";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 120px;
+  color: rgba(0,0,0,0.04);
+  pointer-events: none;
+  white-space: nowrap;
+  font-weight: bold;
+  z-index: 0;
+}
     </style>
   </head>
   <body>
@@ -315,6 +150,12 @@
 
     <div class="container">
       <h1>TextGen Doc</h1>
+      <div class="evidence-container">
+          <video width="100%" controls poster="封面图.jpg">
+              <source src="image/recording.mp4" type="video/mp4">
+              您的浏览器版本过低，无法读取此底层机密影像。
+          </video>
+      </div>
 
       <div class="section-card">
         <h2>Intro</h2>
