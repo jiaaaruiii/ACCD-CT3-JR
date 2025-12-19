@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="EN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shader Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Shader Doc</h1>
+        
+    <div class="gallery" id="scroll-container">
+        <div class="gallery-item">
+            <video src="src/capture (1).webm" muted loop playsinline preload="metadata"></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), uv.x);
+    float strip1 = step(0.5, mod(uv.x*20.0, 1.0));
+    float strip2 = step(0.5, mod(uv.y*20.0, 1.0));
+    color += step(0.5,strip1);
+    color -= step(0.5,strip2);
+
+    fragColor = vec4(color, 1.0);
+}
+
+            </code></pre>
+        </div>
+
+
+        <div class="gallery-item">
+            <video src="src/capture (2).webm" muted loop playsinline preload="metadata"></video>
+            <pre><code>void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), uv.x);
+    float strip1 = step(0.5, mod(uv.x*20.0, 1.0));
+    float strip2 = step(0.5, mod(uv.y*20.0, 1.0));
+    color += step(0.5,strip1);
+    color /= step(0.5,strip2);
+
+    fragColor = vec4(color, 1.0);
+}
+</code></pre></div>
+
+        <div class="gallery-item"><video src="src/capture (3).webm" muted loop playsinline></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), uv.x);
+    float strip1 = step(0.5, mod(uv.x*20.0, 1.0));
+    float strip2 = step(0.5, mod(uv.y*20.0, 1.0));
+    color += step(0.5,strip1);
+    color /= step(0.5,strip2);
+    color = step(sin(iTime*2.0),color);
+
+    fragColor = vec4(color, 1.0);
+}
+</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (4).webm" muted loop playsinline></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    vec3 baseColor = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), uv.x);
+
+    float s1 = step(0.5, mod(uv.x * 20.0, 1.0));
+    float s2 = step(0.5, mod(uv.y * 20.0, 1.0));
+    float grid = abs(s1 - s2); 
+    vec3 color = baseColor * grid;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+        <div class="gallery-item"><video src="src/capture (5).webm" muted loop playsinline></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    vec2 steppedUV = floor(uv * 10.0) / 10.0;
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), steppedUV.x);
+    float line = step(0.05, mod(uv.x * 10.0, 1.0)) * step(0.05, mod(uv.y * 10.0, 1.0));
+    color *= line;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (6).webm" muted loop playsinline></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+
+    vec2 steppedUV = floor(uv * 20.0) / 20.0;
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), steppedUV.x);
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5; 
+    float dist = length(gv);
+    float mask = step(dist, 0.4); 
+    color *= mask;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (7).webm" muted loop playsinline></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    
+    vec2 steppedUV = floor(uv * 20.0) / 20.0;
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), steppedUV.x);
+
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5;
+    float dist = length(gv);
+    
+    float mask = step(dist, 0.4); 
+    color *= mask;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (8).webm" muted loop playsinline></video>
+            <pre><code>
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    vec2 steppedUV = floor(uv * 20.0) / 20.0;
+    vec3 color = mix(vec3(0.2, 0.8, 0.6), vec3(0.1, 0.2, 0.5), steppedUV.y);
+
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5;
+    float diamondDist = abs(gv.x) + abs(gv.y);
+    float mask = step(diamondDist, 0.5); 
+    
+    color *= mask;
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+        <div class="gallery-item"><video src="src/capture (9).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    vec2 steppedUV = floor(uv * 20.0) / 20.0;
+    
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5;
+    float dist = length(gv);
+    
+    float randomRadius = hash(steppedUV) * 0.5; 
+    float mask = step(dist, randomRadius);
+    
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), steppedUV.x);
+    color *= mask;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (10).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5;
+    float dist = length(gv);
+    float circle = step(dist, 0.4);
+    
+    float noise = hash(fragCoord);
+    float mask = circle + step(0.5, noise);
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), uv.x);
+    
+    fragColor = vec4(color * mask, 1.0);
+}</code></pre></div>
+
+        <div class="gallery-item"><video src="src/capture (11).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    vec2 steppedUV = floor(uv * 20.0) / 20.0;
+    
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5;
+    float dist = length(gv);
+    
+    float pixelNoise = hash(fragCoord) * 0.1; 
+    float mask = step(dist + pixelNoise, 0.4); 
+    
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), steppedUV.x);
+    fragColor = vec4(color * mask, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (13).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord / iResolution.xy;
+    
+    vec2 steppedUV = floor(uv * 20.0) / 20.0;
+    vec2 gv = mod(uv * 20.0, 1.0) - 0.5;
+    
+    float dist = length(gv);
+    float angle = atan(gv.y, gv.x);
+    float seed = hash(steppedUV);
+    float shapeNoise = sin(angle * 5.0 + seed * 6.28) * 0.1;
+    float baseRadius = 0.1 + seed * 0.3;
+    float mask = step(dist + shapeNoise, baseRadius);
+    
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), steppedUV.x);
+    color *= mask;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (14).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    float r = length(uv);
+    float a = atan(uv.y, uv.x);
+    
+    float sides = 6.0;
+    float tau = 6.283185;
+    
+    a = mod(a, tau / sides);
+    a = abs(a - tau / sides / 2.0);
+    
+    uv = vec2(cos(a), sin(a)) * r;
+
+    vec2 steppedUV = floor(uv * 15.0) / 15.0;
+    vec2 gv = mod(uv * 15.0, 1.0) - 0.5;
+    
+    float dist = length(gv);
+    float angle = atan(gv.y, gv.x);
+    float seed = hash(steppedUV);
+    
+    float shapeNoise = sin(angle * 5.0 + seed * 6.28) * 0.1;
+    float baseRadius = 0.1 + seed * 0.3;
+    
+    float mask = step(dist + shapeNoise, baseRadius);
+    
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), length(uv));
+    color *= mask;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+
+        <div class="gallery-item"><video src="src/capture (16).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+
+    float r = length(uv);
+    float a = atan(uv.y, uv.x);
+    float sides = 6.0;
+    float tau = 6.283185;
+    a = mod(a, tau / sides);
+    a = abs(a - tau / sides / 2.0);
+    uv = vec2(cos(a), sin(a)) * r;
+
+    float t = iTime;
+    
+    vec2 steppedUV = floor(uv * 15.0) / 15.0;
+    vec2 gv = mod(uv * 15.0, 1.0) - 0.5;
+    
+    float dist = length(gv);
+    float angle = atan(gv.y, gv.x);
+    float seed = hash(steppedUV);
+    
+    float shapeNoise = sin(angle * 5.0 + seed * 6.28 + t * 2.0) * 0.1;
+    
+    float breathe = sin(t + seed * 10.0) * 0.05;
+    float baseRadius = 0.1 + seed * 0.3 + breathe;
+    
+    float mask = step(dist + shapeNoise, baseRadius);
+    
+    vec3 color = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), length(uv));
+    color *= mask;
+
+    fragColor = vec4(color, 1.0);
+}</code></pre></div>
+
+        <div class="gallery-item"><video src="src/capture (18).webm" muted loop playsinline></video>
+            <pre><code>
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv_origin = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    vec3 finalColor = vec3(0.0);
+
+    for(float i = 0.0; i < 3.0; i++) {
+        
+        vec2 uv = uv_origin * (1.0 + i * 0.1); 
+
+        float r = length(uv);
+        float a = atan(uv.y, uv.x);
+        float sides = 6.0;
+        float tau = 6.283185;
+        a = mod(a, tau / sides);
+        a = abs(a - tau / sides / 2.0);
+        uv = vec2(cos(a), sin(a)) * r;
+
+        float t = iTime * (0.5 + i * 0.2);
+        vec2 steppedUV = floor(uv * 15.0) / 15.0;
+        vec2 gv = mod(uv * 15.0, 1.0) - 0.5;
+        
+        float dist = length(gv);
+        float angle = atan(gv.y, gv.x);
+        float seed = hash(steppedUV + i);
+        
+        float shapeNoise = sin(angle * 5.0 + seed * 6.28 + t) * 0.1;
+        float baseRadius = 0.1 + seed * 0.3 + sin(t + seed * 10.0) * 0.05;
+        
+        float mask = step(dist + shapeNoise, baseRadius);
+        
+        vec3 layerColor = mix(vec3(1.0, 0.5, 0.2), vec3(0.2, 0.6, 1.0), length(uv) + i*0.2);
+        
+        finalColor += layerColor * mask * (1.0 - i * 0.3);
+    }
+
+    fragColor = vec4(finalColor, 1.0);
+}</code></pre></div>
+    </div>
+
+    <script>
+    window.onload = () => {
+        const items = document.querySelectorAll('.gallery-item');
+        let currentIndex = 0;
+        const total = items.length;
+        const angleStep = 6; 
+
+        // 触控板/滚轮优化变量
+        let isMoving = false;
+        const cooldown = 800; // 冷却时间，防止触控板瞬间滑完
+
+        function updateFan() {
+            items.forEach((item, index) => {
+                const offset = index - currentIndex;
+                const basePos = `translate(-50%, -50%)`;
+                const rotate = `rotate(${offset * angleStep}deg)`;
+                const moveY = `translateY(${offset * 50}px)`; 
+                const moveZ = `translateZ(${-Math.abs(offset) * 200}px)`;
+
+                item.style.transform = `${basePos} ${rotate} ${moveY} ${moveZ}`;
+                item.style.opacity = index === currentIndex ? 1 : 0.15; 
+                item.style.filter = index === currentIndex ? 'none' : 'blur(4px)';
+                item.style.zIndex = 100 - Math.abs(offset);
+
+                const video = item.querySelector('video');
+                const pre = item.querySelector('pre');
+
+                if (index === currentIndex) {
+                    item.classList.add('active');
+                    video.play().catch(()=>{}); 
+                    // 切换时，代码框自动滚回顶部
+                    if(pre) pre.scrollTop = 0;
+                } else {
+                    item.classList.remove('active');
+                    video.pause();
+                }
+            });
+        }
+
+        // 核心逻辑：触控板与滚轮防抖处理
+        window.addEventListener('wheel', (e) => {
+            // 允许在代码框内部滚动，不触发翻页
+            if (e.target.closest('pre')) {
+                const pre = e.target.closest('pre');
+                // 只有当代码框没滚到底/顶时，才允许内部滚动
+                const isScrollingDown = e.deltaY > 0;
+                const canScrollPre = isScrollingDown 
+                    ? pre.scrollHeight > pre.clientHeight + pre.scrollTop + 1
+                    : pre.scrollTop > 0;
+                
+                if (canScrollPre) return; // 交给代码框处理
+            }
+
+            e.preventDefault(); 
+            if (isMoving) return;
+
+            // 过滤掉极其微小的滑动 (防止触控板极其灵敏的抖动)
+            if (Math.abs(e.deltaY) < 5) return;
+
+            isMoving = true;
+            if (e.deltaY > 0) {
+                currentIndex = Math.min(currentIndex + 1, total - 1);
+            } else {
+                currentIndex = Math.max(currentIndex - 1, 0);
+            }
+            
+            updateFan();
+
+            // 锁定冷却，保证每一页都有切场感
+            setTimeout(() => { isMoving = false; }, cooldown);
+        }, { passive: false });
+
+        updateFan();
+    };
+</script>
+</body>
+</html>

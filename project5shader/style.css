@@ -1,0 +1,121 @@
+/* 基础重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080808; /* 极深黑 */
+    color: #ffffff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+}
+
+h1 {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    z-index: 200;
+    color: #ffffff;
+    letter-spacing: 0.8em;
+    font-weight: 200;
+    font-size: 1rem;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.gallery {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    perspective: 2000px; /* 增加视距 */
+}
+
+/* 卡片调大 */
+.gallery-item {
+    position: absolute;
+    width: 95vw;        
+    max-width: 1400px;  
+    height: auto; 
+    left: 50%;
+    top: 50%;
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.03); 
+    border-radius: 8px; 
+    padding: 40px;      
+    display: flex;
+    flex-direction: row; 
+    align-items: center; 
+    justify-content: center;
+    gap: 40px;
+    transform-origin: -180% 50%; 
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), 
+                opacity 0.6s, 
+                filter 0.6s;
+}
+
+/* 视频保持 16:9 比例 */
+.gallery-item video {
+    flex: 0 0 60%;      
+    width: 60%;
+    aspect-ratio: 16 / 9; 
+    object-fit: cover; 
+    border-radius: 4px;
+    background: #000;
+}
+
+/* 代码部分优化：解决长代码塞不下的问题 */
+.gallery-item pre {
+    flex: 0 0 35%;
+    width: 35%;
+    background: transparent;
+    padding: 10px 20px 10px 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* 核心：固定高度并允许内部滚动 */
+    overflow-y: auto; 
+    overflow-x: hidden;
+    /* 高度与视频高度精确对齐 */
+    height: calc(95vw * 0.6 * 0.5625); 
+    max-height: 650px; /* 大屏下的最高上限 */
+    
+    scroll-behavior: smooth;
+    /* 渐变遮罩：提示底部还有内容 */
+    mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
+}
+
+.gallery-item code {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    color: #888888;     
+    line-height: 1.7;
+    white-space: pre-wrap; /* 保持换行 */
+    word-break: break-all; /* 强制折行 */
+    display: block;
+}
+
+/* 当前激活状态 */
+.gallery-item.active {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 30px 100px rgba(0,0,0,0.9);
+}
+
+.gallery-item.active code {
+    color: #dddddd; 
+}
+
+/* 隐藏及美化滚动条 */
+.gallery-item pre::-webkit-scrollbar {
+    width: 4px;
+}
+.gallery-item pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.gallery-item.active pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+}
