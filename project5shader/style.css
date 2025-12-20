@@ -1,4 +1,3 @@
-/* 基础重置 */
 * {
     margin: 0;
     padding: 0;
@@ -6,9 +5,9 @@
 }
 
 body {
-    background: #080808; /* 极深黑 */
+    background: #080808;
     color: #ffffff;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', sans-serif;
     overflow: hidden;
 }
 
@@ -31,91 +30,85 @@ h1 {
     position: relative;
     width: 100vw;
     height: 100vh;
-    perspective: 2000px; /* 增加视距 */
+    perspective: 2000px;
 }
 
-/* 卡片调大 */
 .gallery-item {
     position: absolute;
-    width: 95vw;        
-    max-width: 1400px;  
-    height: auto; 
+    /* 1. 初始定位在屏幕正中 */
     left: 50%;
     top: 50%;
+    
+    /* 2. 初始位移（非常重要，防止JS加载前位置错乱） */
+    transform: translate(-50%, -50%);
+    
+    width: 95vw;
+    max-width: 1400px;
+    height: auto;
     background: #111111;
-    border: 1px solid rgba(255, 255, 255, 0.03); 
-    border-radius: 8px; 
-    padding: 40px;      
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 40px;
     display: flex;
-    flex-direction: row; 
-    align-items: center; 
+    flex-direction: row;
+    align-items: center;
     justify-content: center;
     gap: 40px;
-    transform-origin: -180% 50%; 
-    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), 
-                opacity 0.6s, 
-                filter 0.6s;
+    
+    /* 3. 旋转圆心：调大负值会让扇形弧度更平缓，且中心卡片更稳 */
+    transform-origin: -150% 50%; 
+    
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.6s, filter 0.6s;
+    z-index: 1;
 }
 
-/* 视频保持 16:9 比例 */
+/* 统一媒体容器：不论图片视频，都锁定在这个框里 */
+.gallery-item img, 
 .gallery-item video {
-    flex: 0 0 60%;      
+    flex: 0 0 60%;
     width: 60%;
-    aspect-ratio: 16 / 9; 
-    object-fit: cover; 
+    aspect-ratio: 16 / 9;
+    object-fit: cover; /* 保证充满且不留黑边 */
     border-radius: 4px;
     background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* 代码部分优化：解决长代码塞不下的问题 */
 .gallery-item pre {
     flex: 0 0 35%;
     width: 35%;
     background: transparent;
     padding: 10px 20px 10px 10px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
-    
-    /* 核心：固定高度并允许内部滚动 */
-    overflow-y: auto; 
+    overflow-y: auto;
     overflow-x: hidden;
-    /* 高度与视频高度精确对齐 */
+    /* 高度必须和媒体对齐 */
     height: calc(95vw * 0.6 * 0.5625); 
-    max-height: 650px; /* 大屏下的最高上限 */
-    
+    max-height: 650px;
     scroll-behavior: smooth;
-    /* 渐变遮罩：提示底部还有内容 */
     mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 0%, black 90%, transparent 100%);
 }
 
 .gallery-item code {
-    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-family: 'Menlo', monospace;
     font-size: 14px;
-    color: #888888;     
+    color: #888888;
     line-height: 1.7;
-    white-space: pre-wrap; /* 保持换行 */
-    word-break: break-all; /* 强制折行 */
+    white-space: pre-wrap;
+    word-break: break-all;
     display: block;
 }
 
-/* 当前激活状态 */
 .gallery-item.active {
     border-color: rgba(255, 255, 255, 0.15);
     box-shadow: 0 30px 100px rgba(0,0,0,0.9);
 }
 
 .gallery-item.active code {
-    color: #dddddd; 
+    color: #dddddd;
 }
 
-/* 隐藏及美化滚动条 */
-.gallery-item pre::-webkit-scrollbar {
-    width: 4px;
-}
-.gallery-item pre::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-.gallery-item.active pre::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-}
+pre::-webkit-scrollbar { width: 4px; }
+pre::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+.gallery-item.active pre::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
